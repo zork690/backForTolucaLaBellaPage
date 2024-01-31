@@ -6,14 +6,15 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Repository;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.IGenericDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.IGenericEntity;
 
-//@Repository
+@Repository
 public abstract class GenericDaoImpl<T extends IGenericEntity> implements IGenericDao<T>{
 
-	/*@Autowired
+	@Autowired
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -39,7 +40,7 @@ public abstract class GenericDaoImpl<T extends IGenericEntity> implements IGener
 		Class<T> type = getType();
 		T result = getSession().get(type, id);		
 		return result;
-	} */
+	}
 	
 	
 }

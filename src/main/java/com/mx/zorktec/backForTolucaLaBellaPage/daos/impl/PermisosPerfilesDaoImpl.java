@@ -10,7 +10,9 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.Permisos;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.PermisosPerfil;
 
 //@Repository
-public class PermisosPerfilesDaoImpl extends GenericDaoImpl<PermisosPerfil> implements PermisosPerfilesDAO{
+public class PermisosPerfilesDaoImpl 
+//extends GenericDaoImpl<PermisosPerfil> implements PermisosPerfilesDAO
+{
 
 	/*@Override
 	public List<PermisosPerfil> obtienePermisosByPerfil(Long idPerfil) {

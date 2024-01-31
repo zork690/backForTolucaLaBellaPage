@@ -13,7 +13,9 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 
 //@Repository
-public class ProveedorDaoImpl extends GenericDaoImpl<Proveedor> implements ProveedorDao{
+public class ProveedorDaoImpl 
+//extends GenericDaoImpl<Proveedor> implements ProveedorDao
+{
 
 	//private static final Logger LOG = LogManager.getLogger(ProveedorDaoImpl.class);
 	
