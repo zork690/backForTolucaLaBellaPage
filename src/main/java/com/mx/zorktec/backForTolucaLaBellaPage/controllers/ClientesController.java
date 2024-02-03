@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +16,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.services.ClientesService;
 import com.mx.zorktec.backForTolucaLaBellaPage.utilities.RespuestasRest;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class ClientesController {
 
 	private static final Logger LOG = LogManager.getLogger(ClientesController.class);
