@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.LoginVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.services.ProveedorService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
 
 //@RestController
 //@RequestMapping("/api/back/tienda")
