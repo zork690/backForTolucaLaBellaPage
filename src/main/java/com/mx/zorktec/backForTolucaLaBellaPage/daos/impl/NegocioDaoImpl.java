@@ -1,25 +1,24 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.daos.impl;
 
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
-//import org.hibernate.query.Query;
-//import org.springframework.dao.DataAccessException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.query.Query;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
-import com.mx.zorktec.backForTolucaLaBellaPage.daos.ProveedorDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Perfil;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Proveedor;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 
-//@Repository
-public class ProveedorDaoImpl 
-//extends GenericDaoImpl<Proveedor> implements ProveedorDao
+@Repository
+public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDao
 {
 
-	//private static final Logger LOG = LogManager.getLogger(ProveedorDaoImpl.class);
+	private static final Logger LOG = LogManager.getLogger(NegocioDaoImpl.class);
 	
-
 	//@Override
 	//public Proveedor findByEmail(CredencialesVo credenciales) {
 		
@@ -37,16 +36,16 @@ public class ProveedorDaoImpl
 		p.setNombre("Nombre de prueba");
 		p.setCelular("0000000000");
 		p.setValidated(true);
-		return p;
+		return p; 
 		
-	}
+	}*/
 
 	@Override
-	protected Class<Proveedor> getType() {
+	protected Class<Negocio> getType() {
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public Usuario validarProveedor(CredencialesVo usuario) {
 		Usuario p = new Usuario();
 		

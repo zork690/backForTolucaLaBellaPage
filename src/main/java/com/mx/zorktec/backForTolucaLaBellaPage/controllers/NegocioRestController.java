@@ -3,7 +3,7 @@ package com.mx.zorktec.backForTolucaLaBellaPage.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.validation.Valid;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +12,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,30 +22,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ProveedorVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
-import com.mx.zorktec.backForTolucaLaBellaPage.services.ProveedorService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
 
 
-
-//@RestController
-//@RequestMapping("/api/back/tienda")
-public class ProveedoresRestController {
+@RestController
+@CrossOrigin(origins = "http://localhost:8082")
+public class NegocioRestController {
 	
-	private static final Logger LOG = LogManager.getLogger(ProveedoresRestController.class);
+	private static final Logger LOG = LogManager.getLogger(NegocioRestController.class);
 	
-/*	@Autowired
-	private ProveedorService proveedorService;
+	@Autowired
+	private NegocioService negocioService;
 
-	@PostMapping("/proveedores/insertarProveedor")
-	public ResponseEntity<SimpleResponse> insertarProveedor(@Valid @RequestBody ProveedorVo proveedor){
+	@PostMapping("/negocios/insertarNegocio")
+	public ResponseEntity<SimpleResponse> insertarNegocio(@Validated @RequestBody NegocioVo negocio){
 		SimpleResponse srResult = new SimpleResponse();
 		
 		try {
-			if(proveedor.getCorreo()!= null) {
-				this.proveedorService.insertarProveedor(proveedor);
-				srResult.setResult("Proveedor insertado correctamente");
+			LOG.info("Negocio enviado: "+negocio);
+			if(negocio.getCorreo()!= null) {
+				this.negocioService.insertarNegocio(negocio);
+				srResult.setResult("Negocio insertado correctamente");
 			}
 		} 
 		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
@@ -62,7 +64,7 @@ public class ProveedoresRestController {
 	}
 	
 
-	@PostMapping("/proveedores/settingPassProveedor")
+	/*@PostMapping("/proveedores/settingPassProveedor")
 	public ResponseEntity<SimpleResponse> settingPassProveedor(@Valid @RequestBody SettingPassProveedorVo credenciales){
 		SimpleResponse srResult = new SimpleResponse();
 		
@@ -88,7 +90,7 @@ public class ProveedoresRestController {
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 		
 		
-	}
+	}*/
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<SimpleResponse> handleValidationExceptions(
@@ -103,5 +105,5 @@ public class ProveedoresRestController {
 	    resultado.setError(errors);
 	    resultado.setMessage("NOT OK");
 	    return new ResponseEntity<SimpleResponse>(resultado, HttpStatus.BAD_REQUEST);
-	} */
+	}
 }

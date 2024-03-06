@@ -1,8 +1,11 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.services.impl;
 
+import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,36 +17,43 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.PermisosPerfilesDAO;
-import com.mx.zorktec.backForTolucaLaBellaPage.daos.ProveedorDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.daos.UbicacionesDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.PermisosPerfil;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Proveedor;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Ubicacion;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.LoginVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.PermisosVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ProveedorVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.EnviaEmailService;
-import com.mx.zorktec.backForTolucaLaBellaPage.services.ProveedorService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
+import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-//@Service
-public class ProveedorServiceImpl implements ProveedorService{
+@Service
+public class NegocioServiceImpl implements NegocioService{
 	
-	private static final Logger LOG = LogManager.getLogger(ProveedorServiceImpl.class);
+	private static final Logger LOG = LogManager.getLogger(NegocioServiceImpl.class);
 
-	/*@Autowired
-	private ProveedorDao proveedorDao;
+	@Autowired
+	private NegocioDao negocioDao;
 	
 	@Autowired
-	private PermisosPerfilesDAO permisosDao;
+	private UbicacionesDao ubicacionesDao;
 	
-	@Autowired
-	private EnviaEmailService enviaEmailService;
+	//@Autowired
+	//private PermisosPerfilesDAO permisosDao;
+	
+	//@Autowired
+	//private EnviaEmailService enviaEmailService;
 	
 	@Value("${secure.secretKey}")
 	private String secretKey;
@@ -55,23 +65,34 @@ public class ProveedorServiceImpl implements ProveedorService{
 	private int timeTokenMs;
 	
 	@Override
-	public void insertarProveedor(ProveedorVo proveedor) {
-		Proveedor p = new Proveedor();
-		p.setCorreo(proveedor.getCorreo());
-		p.setCelular(proveedor.getTelefono());
-		p.setNombre(proveedor.getNombre());
+	public void insertarNegocio(NegocioVo negocio) {
+		String randomId = Utilities.generateIdForClient();
+		LOG.info("RANDOM STRING: "+randomId);
+		Negocio p = new Negocio();
+		p.setIdNegocio(randomId);
+		p.setCalle(negocio.getCalle());
+		p.setCategoria(negocio.getCategoria());
+		p.setEmail(negocio.getCorreo());
+		p.setDescripcion(negocio.getDescripcionComercial());
 		
+		Ubicacion u = this.ubicacionesDao
+				.findById(Ubicacion.class, Integer.parseInt(negocio.getIdUbicacion())).orElse(null);
+		p.setIdUbicacion(u);
 		
+		p.setNombre(negocio.getNombre());
+		p.setNombreEmpresa(negocio.getNombreEmpresa());
+		p.setNumeroExterior(negocio.getNumeroExterior());
+		p.setTelefono(negocio.getTelefono());
 		
-		//this.proveedorDao.saveOrUpdate(p);
-		this.enviaEmailService.enviarEmail(proveedor.getCorreo());
+		this.negocioDao.saveOrUpdate(p);
+		//this.enviaEmailService.enviarEmail(proveedor.getCorreo());
 	}
 
 	@Override
 	public void setPassProveedor(CredencialesVo credenciales) throws ProveedorException {
 		
 		//BUSCAR EMAIL EN LA BASE Y REVISAR QUE YA ESTE VERIFICADO
-		Proveedor p = this.proveedorDao.findByEmail(credenciales);
+		/*Proveedor p = this.proveedorDao.findByEmail(credenciales);
 		
 		//SI PROVEEDOR ES NULO O NO ESTA VERIFICADO LANZAR ProveedorException("Proveedor no encontrado o no verificado")
 		if(p == null) {
@@ -84,7 +105,7 @@ public class ProveedorServiceImpl implements ProveedorService{
 			
 			LOG.info("Agregando pass a proveedor: "+p.getCorreo());
 			//this.proveedorDao.saveOrUpdate(p);
-		}
+		}*/
 		
 		
 	}
@@ -97,8 +118,9 @@ public class ProveedorServiceImpl implements ProveedorService{
 		//crear el método en los daos que busca al usuario por codigo
 	}
 
-	@Override
-	public LoginVo validarProveedor(CredencialesVo credenciales) throws NoSuchFieldException, IllegalAccessException {
+	/*@Override
+	public LoginVo validarProveedor(CredencialesVo credenciales) throws NoSuchFieldException
+	, IllegalAccessException {
 		Usuario usuarioValidar = proveedorDao.validarProveedor(credenciales);
 		UsuarioVo usuarioVo = new UsuarioVo();
 		LoginVo loginVo = new LoginVo();
@@ -147,13 +169,13 @@ public class ProveedorServiceImpl implements ProveedorService{
 		}
 		
 		return loginVo;
-	}
+	}*/
 	
 	private String setJWTToken(String username) {
 		
 		LOG.info("GENERATING JWT TOKEN...");
 		
-		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+		/*List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList("ROLE_USER");
 		
 		@SuppressWarnings("deprecation")
@@ -170,7 +192,8 @@ public class ProveedorServiceImpl implements ProveedorService{
 				.signWith(SignatureAlgorithm.HS512,
 						this.secretKey.getBytes()).compact();
 
-		return "Bearer " + token;
-	}*/
+		return "Bearer " + token;*/
+		return "";
+	}
 
 }
