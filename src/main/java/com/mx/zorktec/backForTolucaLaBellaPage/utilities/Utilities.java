@@ -1,6 +1,10 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.utilities;
 
-public class LimpiaCadenas {
+import java.time.Year;
+import java.util.Calendar;
+import java.util.Date;
+
+public class Utilities {
 
 	public static final String limpiaCadena(String texto) {
 
@@ -9,6 +13,11 @@ public class LimpiaCadenas {
 		// Convierte a mayúsculas
 		return texto.replaceAll("\\s+", " ").trim().toUpperCase();
 
+	}
+	
+	public static final String generateIdForClient() {
+		Long ms = System.currentTimeMillis();
+		return String.valueOf(ms);
 	}
 
 }
