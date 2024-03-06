@@ -1,5 +1,8 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.daos;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.IGenericEntity;
@@ -9,5 +12,5 @@ public interface IGenericDao<T extends IGenericEntity>
 {
 
 	public void saveOrUpdate(T objeto);
-	public T findById(Long id);
+	public Optional<T> findById(Class<T>clazz, Integer id);
 }
