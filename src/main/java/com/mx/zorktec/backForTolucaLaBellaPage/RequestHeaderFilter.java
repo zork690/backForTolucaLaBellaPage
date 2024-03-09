@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,18 +26,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 
-//@Component
-public class RequestHeaderFilter 
-//implements Filter
-{
+@Component
+public class RequestHeaderFilter implements Filter {
 
 	private static final Logger LOG = LogManager.getLogger(RequestHeaderFilter.class);
 	
-	/*private int MAX_REQUESTS_PER_MINUTE = 1;
+	//private int MAX_REQUESTS_PER_MINUTE = 1;
 	
-	@Autowired
-	private RedisTemplate<String, Integer> requestCountsPerIpAddress;
+	//@Autowired
+	//private RedisTemplate<String, Integer> requestCountsPerIpAddress;
 	
+	@Value("${secure.mySecretPass}")
+	private String mySecretPass;	
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -45,6 +46,8 @@ public class RequestHeaderFilter
 	    HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 	    ServletRequest requestWrapper = null;
 	    String body = null;
+	    
+	    final String prefix = "Bearer ";
 		
 		LOG.info("GETTING DE REQUEST ...");
 		LOG.info("GETTING THE DATE: "+ new Timestamp(System.currentTimeMillis()));
@@ -52,31 +55,58 @@ public class RequestHeaderFilter
 		final String url = ((HttpServletRequest)request).getRequestURL().toString();
 		LOG.info("GETTING THE IP: "+ipAddress);
 		LOG.info("GETTING THE URL: "+url);
+		final String authorizationHeader = ((HttpServletRequest)request).getHeader("Authorization");
+		final String token;
+		LOG.info("AUTHORIZATION HEADER: "+authorizationHeader);
 		
-		
-		if(url.contains("/insertarProveedor")) {
-			requestWrapper = this.creatingRequestWrapper(request, requestWrapper);
-			body = this.gettingBody(requestWrapper);
+		if(url.contains("/insertarNegocio")) {
+			if(authorizationHeader == null) {
+				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			}else{
+				LOG.info("Authorization: "+authorizationHeader);
+				if(authorizationHeader.startsWith(prefix)) {
+					token = authorizationHeader.replace(prefix, "");
+					LOG.info("token is:"+token);
+					if(token.equals(mySecretPass)) {
+						chain.doFilter(request, response);
+					}else {
+						httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+					}
+				}else {
+					httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				}
+			}
+		}else {
+			chain.doFilter(request, response);
 		}
 		
-		if(body != null) {
+		
+		
+		
+		
+		/*if(url.contains("/insertarProveedor")) {
+			requestWrapper = this.creatingRequestWrapper(request, requestWrapper);
+			body = this.gettingBody(requestWrapper);
+		}*/
+		
+		/*if(body != null) {
 			if(isMaximumRequestsPerSecondExceeded(this.gettingEmail(body))){
 				httpServletResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
 		        httpServletResponse.getWriter().write("Too many requests");
 		        return;
 			}
-		}
+		}*/
 		
 		
-		if(Objects.isNull(requestWrapper)){
+		/*if(Objects.isNull(requestWrapper)){
 			chain.doFilter(request, response);
         } else {
             chain.doFilter(requestWrapper, response);
-        }
+        }*/
 		
 	}
 	
-	private boolean isMaximumRequestsPerSecondExceeded(String email){
+	/*private boolean isMaximumRequestsPerSecondExceeded(String email){
 	      Integer requests = 0;
 	      final ValueOperations<String, Integer> operations = this.requestCountsPerIpAddress.opsForValue();
 	      boolean ipKey = this.requestCountsPerIpAddress.hasKey(email);
@@ -97,7 +127,7 @@ public class RequestHeaderFilter
 	      
 	      return false;
 	     
-	}
+	}*/
 	
 	private static String getClientIpAddr(HttpServletRequest request) {  
 	    String ip = request.getHeader("X-Forwarded-For");  
@@ -137,10 +167,10 @@ public class RequestHeaderFilter
 	    return ip;  
 	}
 	
-	private ServletRequest creatingRequestWrapper(ServletRequest request, ServletRequest requestWrapper) {
+	/*private ServletRequest creatingRequestWrapper(ServletRequest request, ServletRequest requestWrapper) {
 		requestWrapper = new RequestHttpWrapper((HttpServletRequest)request);
 		return requestWrapper;
-	}
+	}*/
 
 	private String gettingBody(ServletRequest requestWrapper) {
 		String body = null;
@@ -156,7 +186,7 @@ public class RequestHeaderFilter
 		
 	}
 	
-	private String gettingEmail(String body) {
+	/*private String gettingEmail(String body) {
 		try {
 			final JSONObject payload = new JSONObject(body);
 			final String email = payload.getString("correo");
@@ -166,5 +196,5 @@ public class RequestHeaderFilter
 			LOG.error("ERROR JSON_EXCEPTION: "+ e.getLocalizedMessage());
 			return null;
 		}
-	} */
+	}*/
 }
