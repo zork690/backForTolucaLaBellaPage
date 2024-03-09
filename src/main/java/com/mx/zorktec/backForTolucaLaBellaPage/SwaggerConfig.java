@@ -38,7 +38,9 @@ public class SwaggerConfig implements WebMvcConfigurer{
           .paths(PathSelectors.any()).build().apiInfo(apiInfo())
           .useDefaultResponseMessages(false)
           .securitySchemes(Lists.newArrayList(apiKey()))
-          .securityContexts(Arrays.asList(securityContext()));                                                 
+          .securityContexts(Arrays.asList(securityContext()))
+          .pathMapping("back-toluca-bella")
+          ;                                                 
     }
     
     @Bean
