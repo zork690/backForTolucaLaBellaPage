@@ -29,7 +29,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
 
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://tolucalabella.com.mx/")
 public class NegocioRestController {
 	
 	private static final Logger LOG = LogManager.getLogger(NegocioRestController.class);
