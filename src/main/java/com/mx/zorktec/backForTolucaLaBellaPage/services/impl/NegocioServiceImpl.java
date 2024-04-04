@@ -32,6 +32,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorV
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.EnviaEmailService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
 
@@ -48,6 +49,9 @@ public class NegocioServiceImpl implements NegocioService{
 	
 	@Autowired
 	private UbicacionesDao ubicacionesDao;
+	
+	@Autowired
+	private ImagenesNegocioService imagenesNegocioService;
 	
 	//@Autowired
 	//private PermisosPerfilesDAO permisosDao;
@@ -85,6 +89,7 @@ public class NegocioServiceImpl implements NegocioService{
 		p.setTelefono(negocio.getTelefono());
 		
 		this.negocioDao.saveOrUpdate(p);
+		this.imagenesNegocioService.processingImagefromNegocio(negocio.getImagenes(), randomId);
 		//this.enviaEmailService.enviarEmail(proveedor.getCorreo());
 	}
 
