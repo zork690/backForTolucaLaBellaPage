@@ -2,6 +2,8 @@ package com.mx.zorktec.backForTolucaLaBellaPage.entities.vo;
 
 
 
+import java.util.List;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -18,7 +20,7 @@ public class NegocioVo {
 	
 	@NotBlank(message="Nombre requerido")
 	@Size(max=50, message = "Nombre máximo 50 carácteres")
-	@Pattern(message="Nombre solo letras", regexp = "^[A-Za-z ]+$")
+	@Pattern(message="Nombre solo letras", regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")
 	private String nombre;
 	
 	@NotBlank(message="Teléfono requerido")
@@ -32,12 +34,12 @@ public class NegocioVo {
 	
 	@NotBlank(message="Nombre de la empresa es requerido")
 	@Size(max=50, message = "Nombre de la empresa máximo 50 carácteres")
-	@Pattern(message="Nombre de la empresa solo letras o números", regexp = "^[a-zA-Z0-9]+$")
+	@Pattern(message="Nombre de la empresa solo letras o números", regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$")
 	private String nombreEmpresa;
 	
 	@NotBlank(message="Calle es requerida")
 	@Size(max=50, message = "Calle máximo 50 carácteres")
-	@Pattern(message="Calle solo letras o números", regexp = "^[a-zA-Z0-9 ]+$")
+	@Pattern(message="Calle solo letras o números", regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$")
 	private String calle;
 	
 	@NotBlank(message="Número exterior es requerido")
@@ -51,11 +53,13 @@ public class NegocioVo {
 	
 	@NotBlank(message="Descripción comercial es requerida")
 	@Size(max=150, message = "Descripción comercial máximo 150 carácteres")
-	@Pattern(message="Descripción comercial solo letras o números", regexp = "^[a-zA-Z0-9 ]+$")
+	@Pattern(message="Descripción comercial solo letras o números", regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$")
 	private String descripcionComercial;
 	
 	@NotBlank(message="Categoría es requerida")
 	@Size(max=50, message = "Categoría máximo 50 carácteres")
-	@Pattern(message="Categoría solo letras", regexp = "^[A-Za-z ]+$")
+	@Pattern(message="Categoría solo letras", regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")
 	private String categoria;
+	
+	private List<ImagenesNegociosVo> imagenes;
 }
