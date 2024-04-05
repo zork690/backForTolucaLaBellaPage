@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mx.zorktec.backForTolucaLaBellaPage.daos.ClientesDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Clientes;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ClientesService;
 
@@ -13,17 +13,16 @@ import com.mx.zorktec.backForTolucaLaBellaPage.services.ClientesService;
 public class ClientesServiceImpl implements ClientesService{
 	
 	private static final Logger LOG = LogManager.getLogger(ClientesServiceImpl.class);
-
+	
 	@Autowired
-	private ClientesDao clientesDao;
+	private NegocioDao negocioDao;
 	
 	@Override
 	public Clientes getConteoClientes() 
 	{
-		Clientes c = clientesDao.findById(1).orElse(null);
-		
-		LOG.info("Conteo de clientes es: "+c.getConteo());
-		
+		Clientes c = new Clientes();
+		c.setConteo(Long.valueOf(this.negocioDao.conteoNegocios()).intValue());
+		LOG.info("Conteo de negocios van: {}",c.getConteo());
 		return c;
 		
 	}
