@@ -67,7 +67,7 @@ public class RequestHeaderFilter implements Filter {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
-			if(!((HttpServletRequest)request).getHeader("Origin").equals("https://tolucalabella.com.mx/")) {
+			if(!((HttpServletRequest)request).getHeader("Origin").equals("https://tolucalabella.com.mx")) {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
