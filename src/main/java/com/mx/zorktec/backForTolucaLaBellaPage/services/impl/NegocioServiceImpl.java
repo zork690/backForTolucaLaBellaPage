@@ -89,7 +89,7 @@ public class NegocioServiceImpl implements NegocioService{
 		p.setTelefono(negocio.getTelefono());
 		
 		this.negocioDao.saveOrUpdate(p);
-		this.imagenesNegocioService.processingImagefromNegocio(negocio.getImagenes(), randomId);
+		this.imagenesNegocioService.processingImagefromNegocio(p, negocio.getImagenes(), randomId);
 		//this.enviaEmailService.enviarEmail(proveedor.getCorreo());
 	}
 
