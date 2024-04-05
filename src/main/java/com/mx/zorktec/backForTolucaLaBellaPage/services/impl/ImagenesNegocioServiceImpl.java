@@ -10,9 +10,13 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegociosVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
 
@@ -24,9 +28,13 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 	@Value("${server.base.path}")
 	private String basePath;
 	
+	@Autowired
+	private ImagenDao imagenDao;
+	
 	@Override
-	public void processingImagefromNegocio(List<ImagenesNegociosVo> imagenes, String randomId) {
+	public void processingImagefromNegocio(Negocio negocio, List<ImagenesNegociosVo> imagenes, String randomId) {
 		LOG.info("Processing images of business id {} from base64 to a server folder...",randomId);
+		LOG.info("DIRECTORY PATH: {}", this.basePath);
 		
 		imagenes.forEach((imagen)->{
 			String base64 = imagen.getBaseContent();
@@ -38,6 +46,11 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 				OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
 				outputStream.write(data);
 				LOG.info("URL: {}",path);
+				LOG.info("Saving data into table..");
+				Imagen i = new Imagen();
+				i.setNombre(imagen.getNombre());
+				i.setIdNegocio(negocio);
+				this.imagenDao.saveOrUpdate(i);
 			}catch(Exception e) {
 				LOG.error("A processing image error occurred {}",e.getLocalizedMessage());
 			}
