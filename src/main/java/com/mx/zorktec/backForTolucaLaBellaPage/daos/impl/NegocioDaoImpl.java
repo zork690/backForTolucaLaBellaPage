@@ -45,6 +45,16 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		return null;
 	}
 
+	@Override
+	public long conteoNegocios() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count (id) as negocios");
+		sb.append(" from Negocio");
+		String sql = sb.toString();
+		Query<Long> query = super.getSession().createQuery(sql, Long.class);
+		return query.uniqueResult();
+	}
+
 	/*@Override
 	public Usuario validarProveedor(CredencialesVo usuario) {
 		Usuario p = new Usuario();

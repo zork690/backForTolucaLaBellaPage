@@ -10,4 +10,5 @@ public interface NegocioDao extends IGenericDao<Negocio>{
 
 	//public Proveedor findByEmail(CredencialesVo credenciales);
 	//public Usuario validarProveedor(CredencialesVo usuario);
+	long conteoNegocios();
 }
