@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 
 //@Repository
-public interface ImagenDao 
-//extends JpaRepository<Imagen, Integer> 
+public interface ImagenDao extends IGenericDao<Imagen>
 {
 
 	/*@Query("SELECT im FROM Imagen im WHERE im.estatus = true")
