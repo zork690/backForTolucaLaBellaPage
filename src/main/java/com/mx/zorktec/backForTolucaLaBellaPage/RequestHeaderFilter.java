@@ -2,9 +2,9 @@ package com.mx.zorktec.backForTolucaLaBellaPage;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+//import java.util.Objects;
+//import java.util.concurrent.TimeUnit;
+//import java.util.stream.Collectors;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,13 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.HttpStatus;
+//import org.springframework.boot.configurationprocessor.json.JSONException;
+//import org.springframework.boot.configurationprocessor.json.JSONObject;
+//import org.springframework.data.redis.core.RedisTemplate;
+//import org.springframework.data.redis.core.ValueOperations;
+//import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 
@@ -44,12 +44,13 @@ public class RequestHeaderFilter implements Filter {
 			throws IOException, ServletException {
 		
 	    HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-	    ServletRequest requestWrapper = null;
-	    String body = null;
+	    //ServletRequest requestWrapper = null;
+	    //String body = null;
 	    
 	    final String prefix = "Bearer ";
 		
-		LOG.info("GETTING DE REQUEST ...");
+		LOG.info("GETTING DE REQUEST {} ...",((HttpServletRequest)request).getMethod());
+		LOG.info("ORIGIN: {}",((HttpServletRequest)request).getHeader("Origin"));
 		LOG.info("GETTING THE DATE: "+ new Timestamp(System.currentTimeMillis()));
 		String ipAddress =  getClientIpAddr(((HttpServletRequest)request));
 		final String url = ((HttpServletRequest)request).getRequestURL().toString();
@@ -59,9 +60,32 @@ public class RequestHeaderFilter implements Filter {
 		final String token;
 		LOG.info("AUTHORIZATION HEADER: "+authorizationHeader);
 		
+		
+		
 		if(url.contains("/insertarNegocio")) {
-			if(authorizationHeader == null) {
+			if(((HttpServletRequest)request).getHeader("Origin") == null) {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			if(!((HttpServletRequest)request).getHeader("Origin").equals("https://tolucalabella.com.mx/")) {
+				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			if(authorizationHeader == null) {
+				if(((HttpServletRequest)request).getMethod().equals("OPTIONS")) {
+					httpServletResponse.setHeader("Access-Control-Allow-Headers"
+							, "authorization, Content-Type"); //, Accept, X-Requested-With, remember-me
+					httpServletResponse.setHeader("Access-Control-Allow-Methods"
+							, "POST"); //, GET, OPTIONS, DELETE
+					httpServletResponse.setHeader("Access-Control-Allow-Origin"
+							,((HttpServletRequest)request).getHeader("Origin"));
+					httpServletResponse.setHeader("Access-Control-Max-Age", "1800");
+				    //httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+				    httpServletResponse.setStatus(200);
+				}else {
+					httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				}
+				
 			}else{
 				LOG.info("Authorization: "+authorizationHeader);
 				if(authorizationHeader.startsWith(prefix)) {
@@ -172,7 +196,7 @@ public class RequestHeaderFilter implements Filter {
 		return requestWrapper;
 	}*/
 
-	private String gettingBody(ServletRequest requestWrapper) {
+	/*private String gettingBody(ServletRequest requestWrapper) {
 		String body = null;
 		try {
 			body = requestWrapper.getReader()
@@ -184,7 +208,7 @@ public class RequestHeaderFilter implements Filter {
 			return body;
 		}
 		
-	}
+	}*/
 	
 	/*private String gettingEmail(String body) {
 		try {
