@@ -34,8 +34,8 @@ public class Imagen implements IGenericEntity, Serializable {
 	@Column(name="id")
 	private int numImagen;
 
-	@Column(name="url")
-	private String url;
+	@Column(name="nombre")
+	private String nombre;
 
 	@ManyToOne
 	@JoinColumn(name="id_negocio", referencedColumnName="id_negocio")
