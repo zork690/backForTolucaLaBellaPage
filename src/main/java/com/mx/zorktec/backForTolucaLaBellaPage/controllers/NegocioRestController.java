@@ -1,5 +1,6 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
@@ -59,10 +62,21 @@ public class NegocioRestController {
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
-		
-		
 	}
 	
+	@GetMapping("/negocios/listarNegocios")
+	public ResponseEntity<SimpleResponse> listarNegocios(){
+		SimpleResponse response = new SimpleResponse();
+		try {
+			this.negocioService.getNegocios();
+			response.setResult(new ArrayList<NegociosInfoVo>(this.negocioService.getNegocios()));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}catch(Exception error) {
+			LOG.error("Error al consultar imágenes {}", error);
+			response.setError(error.getMessage());
+			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	/*@PostMapping("/proveedores/settingPassProveedor")
 	public ResponseEntity<SimpleResponse> settingPassProveedor(@Valid @RequestBody SettingPassProveedorVo credenciales){
