@@ -1,11 +1,16 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.services.impl;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,15 +24,18 @@ import org.springframework.stereotype.Service;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.PermisosPerfilesDAO;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.UbicacionesDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.PermisosPerfil;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Proveedor;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Ubicacion;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.LoginVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.PermisosVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
@@ -91,6 +99,47 @@ public class NegocioServiceImpl implements NegocioService{
 		this.negocioDao.saveOrUpdate(p);
 		this.imagenesNegocioService.processingImagefromNegocio(p, negocio.getImagenes(), randomId);
 		//this.enviaEmailService.enviarEmail(proveedor.getCorreo());
+	}
+	
+	@Override
+	public List<NegociosInfoVo> getNegocios() {
+		List<NegociosInfoVo> listNegociosVo = new ArrayList<NegociosInfoVo>();
+		
+		List<Negocio> negocios = this.negocioDao.findAll("Negocio", Negocio.class)
+				.orElse(null);
+		List<Imagen> imagenesList = this.imagenesNegocioService.getAllImages();
+		
+		negocios.forEach((negocio)->{
+			NegociosInfoVo negociosVo = new NegociosInfoVo();
+			List<ImagenNegocioVo> listImagenNegocio = new ArrayList<ImagenNegocioVo>();
+			
+			negociosVo.setId(negocio.getId());
+			negociosVo.setIdNegocio(negocio.getIdNegocio());
+			negociosVo.setNombre(negocio.getNombre());
+			negociosVo.setTelefono(negocio.getTelefono());
+			negociosVo.setEmail(negocio.getEmail());
+			negociosVo.setUbicacion(negocio.getIdUbicacion());
+			negociosVo.setDescripcion(negocio.getDescripcion());
+			negociosVo.setCalle(negocio.getCalle());
+			negociosVo.setCategoria(negocio.getCategoria());
+			negociosVo.setNombrEmpresa(negocio.getNombreEmpresa());
+			negociosVo.setNumeroExterior(negocio.getNumeroExterior());
+			
+			imagenesList.forEach((imagen)->{
+				ImagenNegocioVo imagenNegocioVo = new ImagenNegocioVo();
+				if(negocio.getIdNegocio().equals(imagen.getIdNegocio().getIdNegocio())) {
+					imagenNegocioVo.setId(imagen.getNumImagen());
+					imagenNegocioVo.setIdNegocio(negocio.getIdNegocio());
+					imagenNegocioVo.setNombre(imagen.getNombre());
+					listImagenNegocio.add(imagenNegocioVo);
+				}
+			});
+			
+			negociosVo.setImagenes(listImagenNegocio);
+			
+			listNegociosVo.add(negociosVo);
+		});
+		return listNegociosVo;
 	}
 
 	@Override
