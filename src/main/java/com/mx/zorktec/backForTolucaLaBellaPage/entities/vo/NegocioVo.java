@@ -53,7 +53,7 @@ public class NegocioVo {
 	
 	@NotBlank(message="Descripción comercial es requerida")
 	@Size(max=150, message = "Descripción comercial máximo 150 carácteres")
-	@Pattern(message="Descripción comercial solo letras o números", regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ]+$")
+	@Pattern(message="Descripción comercial solo letras o números", regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ,\". ]+$")
 	private String descripcionComercial;
 	
 	@NotBlank(message="Categoría es requerida")
