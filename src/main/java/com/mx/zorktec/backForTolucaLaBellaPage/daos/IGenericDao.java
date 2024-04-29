@@ -13,4 +13,5 @@ public interface IGenericDao<T extends IGenericEntity>
 
 	public void saveOrUpdate(T objeto);
 	public Optional<T> findById(Class<T>clazz, Integer id);
+	public Optional<List<T>> findAll(String entity, Class<T> clazz);
 }
