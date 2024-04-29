@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.IGenericDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.IGenericEntity;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Ubicacion;
 
 @Repository
@@ -46,5 +47,13 @@ public abstract class GenericDaoImpl<T extends IGenericEntity> implements IGener
 		//Class<Ubicacion> type = getType();
 		Optional<T> result =  Optional.of(getSession().get(clazz, id));		
 		return result;
+	}
+	
+	@Override
+	public Optional<List<T>> findAll(String entity, Class<T> clazz) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" from "+entity);
+		String sql = sb.toString();
+		return Optional.of((this.getSession().createQuery(sql, clazz).getResultList()));
 	}
 }
