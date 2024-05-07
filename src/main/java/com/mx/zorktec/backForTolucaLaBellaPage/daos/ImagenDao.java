@@ -1,6 +1,7 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.daos;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,7 @@ public interface ImagenDao extends IGenericDao<Imagen>
 		System.out.println("ESTA PIDIENDO TODOS DE LA BASE DE DATOS");
 		return this.findAll();
 	}*/
+	
+	//@Query("SELECT im FROM IMAGEN im WHERE im.idNegocio.idNegocio = id")
+	public Optional<List<Imagen>> getImagesById(String id);
 }
