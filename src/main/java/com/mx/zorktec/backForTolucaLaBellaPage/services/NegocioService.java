@@ -15,6 +15,7 @@ public interface NegocioService {
 	public void setPassProveedor(CredencialesVo credenciales)throws ProveedorException;
 	public void setPassProveedor(SettingPassProveedorVo credenciales)throws ProveedorException;
 	public List<NegociosInfoVo> getNegocios();
+	public NegociosInfoVo getNegocioById(String id) throws Exception;
 	//public LoginVo validarProveedor(CredencialesVo credenciales)throws NoSuchFieldException
 	//, IllegalAccessException;
 }
