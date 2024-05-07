@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.PermisosPerfilesDAO;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.UbicacionesDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
@@ -60,6 +61,9 @@ public class NegocioServiceImpl implements NegocioService{
 	
 	@Autowired
 	private ImagenesNegocioService imagenesNegocioService;
+	
+	@Autowired
+	private ImagenDao imagenesDao;
 	
 	//@Autowired
 	//private PermisosPerfilesDAO permisosDao;
@@ -140,6 +144,44 @@ public class NegocioServiceImpl implements NegocioService{
 			listNegociosVo.add(negociosVo);
 		});
 		return listNegociosVo;
+	}
+	
+	@Override
+	public NegociosInfoVo getNegocioById(String id) throws Exception {
+		Optional<Negocio> negocio = this.negocioDao.findById(Negocio.class, id);
+		Optional<List<Imagen>> imagenes =  this.imagenesDao.getImagesById(id);
+		if(negocio.isPresent()) {
+			if(imagenes.isPresent()) {
+				NegociosInfoVo negocioVo = new NegociosInfoVo();
+				List<ImagenNegocioVo> listImagenNegocio = new ArrayList<ImagenNegocioVo>();
+				imagenes.get().forEach((imagen)->{
+					ImagenNegocioVo imagenesVo = new ImagenNegocioVo();
+					imagenesVo.setId(imagen.getNumImagen());
+					imagenesVo.setIdNegocio(imagen.getIdNegocio().getIdNegocio());
+					imagenesVo.setNombre(imagen.getNombre());
+					listImagenNegocio.add(imagenesVo);
+				});
+				negocioVo.setId(negocio.get().getId());
+				negocioVo.setIdNegocio(negocio.get().getIdNegocio());
+				negocioVo.setNombre(negocio.get().getNombre());
+				negocioVo.setTelefono(negocio.get().getTelefono());
+				negocioVo.setEmail(negocio.get().getEmail());
+				negocioVo.setUbicacion(negocio.get().getIdUbicacion());
+				negocioVo.setDescripcion(negocio.get().getDescripcion());
+				negocioVo.setCalle(negocio.get().getCalle());
+				negocioVo.setCategoria(negocio.get().getCategoria());
+				negocioVo.setNombrEmpresa(negocio.get().getNombreEmpresa());
+				negocioVo.setNumeroExterior(negocio.get().getNumeroExterior());
+				negocioVo.setImagenes(listImagenNegocio);
+				LOG.info("El negocio consultado es: {}", negocioVo);
+				return negocioVo;
+			}else {
+				throw new Exception("Null images");
+			}
+		}else {
+			throw new Exception("Null exception");
+		}
+		
 	}
 
 	@Override
