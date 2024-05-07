@@ -18,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,11 +69,23 @@ public class NegocioRestController {
 	public ResponseEntity<SimpleResponse> listarNegocios(){
 		SimpleResponse response = new SimpleResponse();
 		try {
-			this.negocioService.getNegocios();
 			response.setResult(new ArrayList<NegociosInfoVo>(this.negocioService.getNegocios()));
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}catch(Exception error) {
-			LOG.error("Error al consultar imágenes {}", error);
+			LOG.error("Error al consultar los negocios {}", error);
+			response.setError(error.getMessage());
+			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/negocios/listarNegocios/{negocioId}")
+	public ResponseEntity<SimpleResponse> listarNegocioById(@PathVariable String negocioId){
+		SimpleResponse response = new SimpleResponse();
+		try {
+			response.setResult(this.negocioService.getNegocioById(negocioId));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}catch(Exception error) {
+			LOG.error("Error al consultar el negocio {}", error.getMessage());
 			response.setError(error.getMessage());
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
