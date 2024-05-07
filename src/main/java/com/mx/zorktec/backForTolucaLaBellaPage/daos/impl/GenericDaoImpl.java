@@ -50,6 +50,12 @@ public abstract class GenericDaoImpl<T extends IGenericEntity> implements IGener
 	}
 	
 	@Override
+	public Optional<T> findById(Class<T> clazz, String id) {
+		Optional<T> result =  Optional.of(getSession().get(clazz, id));		
+		return result;
+	}
+	
+	@Override
 	public Optional<List<T>> findAll(String entity, Class<T> clazz) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" from "+entity);
