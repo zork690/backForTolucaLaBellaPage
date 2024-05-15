@@ -1,5 +1,8 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.daos.impl;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
@@ -50,9 +53,19 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		StringBuilder sb = new StringBuilder();
 		sb.append("select count (id) as negocios");
 		sb.append(" from Negocio");
+		sb.append(" WHERE isValid = 1");
 		String sql = sb.toString();
 		Query<Long> query = super.getSession().createQuery(sql, Long.class);
 		return query.uniqueResult();
+	}
+
+	@Override
+	public Optional<List<Negocio>> findAll() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" from Negocio");
+		sb.append(" where isValid = 1");
+		String sql = sb.toString();
+		return Optional.of((super.getSession().createQuery(sql, Negocio.class).getResultList()));
 	}
 
 	/*@Override

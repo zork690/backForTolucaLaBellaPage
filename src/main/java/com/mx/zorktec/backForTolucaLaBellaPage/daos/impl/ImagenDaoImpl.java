@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 
 @Repository
 public class ImagenDaoImpl extends GenericDaoImpl<Imagen> implements ImagenDao {
@@ -31,6 +32,15 @@ public class ImagenDaoImpl extends GenericDaoImpl<Imagen> implements ImagenDao {
 		String sql = sb.toString();
 		Query<Imagen> query = super.getSession().createQuery(sql, Imagen.class);
 		return Optional.of(query.getResultList());
+	}
+
+	@Override
+	public List<Imagen> findAll() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" from Imagen");
+		sb.append(" where isValid = 1");
+		String sql = sb.toString();
+		return super.getSession().createQuery(sql, Imagen.class).getResultList();
 	}
 
 }
