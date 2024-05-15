@@ -60,7 +60,7 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 
 	@Override
 	public List<Imagen> getAllImages() {
-		return this.imagenDao.findAll("Imagen", Imagen.class).orElse(null);
+		return this.imagenDao.findAll();
 	}
 
 }
