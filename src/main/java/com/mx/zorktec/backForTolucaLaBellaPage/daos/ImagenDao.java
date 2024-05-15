@@ -23,4 +23,5 @@ public interface ImagenDao extends IGenericDao<Imagen>
 	
 	//@Query("SELECT im FROM IMAGEN im WHERE im.idNegocio.idNegocio = id")
 	public Optional<List<Imagen>> getImagesById(String id);
+	public List<Imagen> findAll();
 }
