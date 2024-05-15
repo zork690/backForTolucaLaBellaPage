@@ -109,7 +109,7 @@ public class NegocioServiceImpl implements NegocioService{
 	public List<NegociosInfoVo> getNegocios() {
 		List<NegociosInfoVo> listNegociosVo = new ArrayList<NegociosInfoVo>();
 		
-		List<Negocio> negocios = this.negocioDao.findAll("Negocio", Negocio.class)
+		List<Negocio> negocios = this.negocioDao.findAll()
 				.orElse(null);
 		List<Imagen> imagenesList = this.imagenesNegocioService.getAllImages();
 		
