@@ -59,4 +59,7 @@ public class Negocio implements IGenericEntity, Serializable{
 	
 	@Column(name = "numero_exterior")
 	private String numeroExterior;
+	
+	@Column(name = "isValid")
+	private int isValid;
 }

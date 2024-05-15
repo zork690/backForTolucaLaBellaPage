@@ -40,5 +40,8 @@ public class Imagen implements IGenericEntity, Serializable {
 	@ManyToOne
 	@JoinColumn(name="id_negocio", referencedColumnName="id_negocio")
 	private Negocio idNegocio;
+	
+	@Column(name = "isValid")
+	private int isValid;
 
 }
