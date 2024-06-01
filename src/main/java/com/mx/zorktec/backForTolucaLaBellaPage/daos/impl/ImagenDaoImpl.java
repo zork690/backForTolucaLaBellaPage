@@ -38,7 +38,16 @@ public class ImagenDaoImpl extends GenericDaoImpl<Imagen> implements ImagenDao {
 	public List<Imagen> findAll() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" from Imagen");
-		sb.append(" where isValid = 1");
+		//sb.append(" where valid = 1");
+		String sql = sb.toString();
+		return super.getSession().createQuery(sql, Imagen.class).getResultList();
+	}
+
+	@Override
+	public List<Imagen> findOnlyValids() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" from Imagen");
+		sb.append(" where valid = 1");
 		String sql = sb.toString();
 		return super.getSession().createQuery(sql, Imagen.class).getResultList();
 	}
