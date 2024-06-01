@@ -38,6 +38,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.PermisosVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.EnviaEmailService;
@@ -106,12 +107,42 @@ public class NegocioServiceImpl implements NegocioService{
 	}
 	
 	@Override
+	public void actualizarNegocio(UpdateNegocioVo negocio) throws NullPointerException {
+		Optional<Negocio> p = this.negocioDao.findById(Negocio.class, negocio.getId());
+		
+		if(p == null) {
+			throw new NullPointerException("negocio no encontrado");
+		}
+			
+		
+		if(p.isPresent()) {
+			Negocio n = p.get();
+		n.setCalle(negocio.getCalle());
+		n.setEmail(negocio.getCorreo());
+		n.setDescripcion(negocio.getDescripcionComercial());
+		
+		Ubicacion u = this.ubicacionesDao
+				.findById(Ubicacion.class, Integer.parseInt(negocio.getIdUbicacion())).orElse(null);
+		n.setIdUbicacion(u);
+		
+		n.setNombre(negocio.getNombre());
+		n.setNombreEmpresa(negocio.getNombreEmpresa());
+		n.setNumeroExterior(negocio.getNumeroExterior());
+		n.setTelefono(negocio.getTelefono());
+		n.setValido(negocio.isValido());
+		
+		this.negocioDao.saveOrUpdate(n);
+		}
+		
+	}
+	
+	@Override
 	public List<NegociosInfoVo> getNegocios() {
 		List<NegociosInfoVo> listNegociosVo = new ArrayList<NegociosInfoVo>();
 		
-		List<Negocio> negocios = this.negocioDao.findAll()
+		List<Negocio> negocios = this.negocioDao.findOnlyValids()
 				.orElse(null);
-		List<Imagen> imagenesList = this.imagenesNegocioService.getAllImages();
+		List<Imagen> imagenesList = this.imagenesNegocioService.getOnlyValidImages();
 		
 		negocios.forEach((negocio)->{
 			NegociosInfoVo negociosVo = new NegociosInfoVo();
@@ -128,6 +159,7 @@ public class NegocioServiceImpl implements NegocioService{
 			negociosVo.setCategoria(negocio.getCategoria());
 			negociosVo.setNombrEmpresa(negocio.getNombreEmpresa());
 			negociosVo.setNumeroExterior(negocio.getNumeroExterior());
+			negociosVo.setValid(negocio.isValido());
 			
 			imagenesList.forEach((imagen)->{
 				ImagenNegocioVo imagenNegocioVo = new ImagenNegocioVo();
@@ -135,12 +167,56 @@ public class NegocioServiceImpl implements NegocioService{
 					imagenNegocioVo.setId(imagen.getNumImagen());
 					imagenNegocioVo.setIdNegocio(negocio.getIdNegocio());
 					imagenNegocioVo.setNombre(imagen.getNombre());
+					imagenNegocioVo.setValid(imagen.isValid());
 					listImagenNegocio.add(imagenNegocioVo);
 				}
 			});
 			
 			negociosVo.setImagenes(listImagenNegocio);
 			
+			listNegociosVo.add(negociosVo);
+		});
+		return listNegociosVo;
+	}
+	
+	@Override
+	public List<NegociosInfoVo> getNegociosTodos() {
+		List<NegociosInfoVo> listNegociosVo = new ArrayList<NegociosInfoVo>();
+
+		List<Negocio> negocios = this.negocioDao.findAll()
+				.orElse(null);
+		List<Imagen> imagenesList = this.imagenesNegocioService.getAllImages();
+
+		negocios.forEach((negocio)->{
+			NegociosInfoVo negociosVo = new NegociosInfoVo();
+			List<ImagenNegocioVo> listImagenNegocio = new ArrayList<ImagenNegocioVo>();
+
+			negociosVo.setId(negocio.getId());
+			negociosVo.setIdNegocio(negocio.getIdNegocio());
+			negociosVo.setNombre(negocio.getNombre());
+			negociosVo.setTelefono(negocio.getTelefono());
+			negociosVo.setEmail(negocio.getEmail());
+			negociosVo.setUbicacion(negocio.getIdUbicacion());
+			negociosVo.setDescripcion(negocio.getDescripcion());
+			negociosVo.setCalle(negocio.getCalle());
+			negociosVo.setCategoria(negocio.getCategoria());
+			negociosVo.setNombrEmpresa(negocio.getNombreEmpresa());
+			negociosVo.setNumeroExterior(negocio.getNumeroExterior());
+			negociosVo.setValid(negocio.isValido());
+
+			imagenesList.forEach((imagen)->{
+				ImagenNegocioVo imagenNegocioVo = new ImagenNegocioVo();
+				if(negocio.getIdNegocio().equals(imagen.getIdNegocio().getIdNegocio())) {
+					imagenNegocioVo.setId(imagen.getNumImagen());
+					imagenNegocioVo.setIdNegocio(negocio.getIdNegocio());
+					imagenNegocioVo.setNombre(imagen.getNombre());
+					imagenNegocioVo.setValid(imagen.isValid());
+					listImagenNegocio.add(imagenNegocioVo);
+				}
+			});
+
+			negociosVo.setImagenes(listImagenNegocio);
+
 			listNegociosVo.add(negociosVo);
 		});
 		return listNegociosVo;
@@ -291,5 +367,4 @@ public class NegocioServiceImpl implements NegocioService{
 		return "Bearer " + token;*/
 		return "";
 	}
-
 }
