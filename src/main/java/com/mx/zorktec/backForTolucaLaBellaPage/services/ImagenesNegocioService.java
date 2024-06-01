@@ -12,5 +12,6 @@ public interface ImagenesNegocioService {
 			, List<ImagenesNegociosVo> imagenes
 			, String randomId);
 	public List<Imagen> getAllImages();
+	public List<Imagen> getOnlyValidImages();
 
 }
