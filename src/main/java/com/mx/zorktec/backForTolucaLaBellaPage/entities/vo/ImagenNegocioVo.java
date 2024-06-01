@@ -12,4 +12,5 @@ public class ImagenNegocioVo {
 	private int id;
 	private String nombre;
 	private String idNegocio;
+	private boolean valid;
 }
