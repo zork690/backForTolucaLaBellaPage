@@ -28,6 +28,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
 
@@ -57,8 +58,31 @@ public class NegocioRestController {
 			srResult.setError("Ya existe un proveedor con el correo o con el teléfono indicado.");
 			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
 		 }catch (DataAccessException e) {
-			LOG.info("Ocurrio un error al guardar el proveedor: " ,e);
+			LOG.error("Ocurrio un error al guardar el negocio:" +e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		srResult.setMessage("OK");
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
+	}
+	
+	@PostMapping("/negocios/actualizarNegocio")
+	public ResponseEntity<SimpleResponse> actualizarNegocio(@Validated @RequestBody UpdateNegocioVo negocio){
+		SimpleResponse srResult = new SimpleResponse();
+		
+		try {
+			LOG.info("Negocio enviado: "+negocio);
+			if(negocio.getCorreo()!= null) {
+				this.negocioService.actualizarNegocio(negocio);
+				srResult.setResult("Negocio actualizado correctamente");
+			}
+		} catch (DataAccessException e) {
+			LOG.error("Ocurrio un error al actualizar el negocio:" +e.getLocalizedMessage());
+			srResult.setError("Existe un problema accesando a la base.");
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (NullPointerException e) {
+			LOG.error("Ocurrio un error al actualizar el negocio:"+e.getLocalizedMessage());
+			srResult.setError("Negocio no encontrado.");
 			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
@@ -72,7 +96,7 @@ public class NegocioRestController {
 			response.setResult(new ArrayList<NegociosInfoVo>(this.negocioService.getNegocios()));
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}catch(Exception error) {
-			LOG.error("Error al consultar los negocios {}", error);
+			LOG.error("Error al consultar los negocios: "+ error.getMessage());
 			response.setError(error.getMessage());
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -85,12 +109,25 @@ public class NegocioRestController {
 			response.setResult(this.negocioService.getNegocioById(negocioId));
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}catch(Exception error) {
-			LOG.error("Error al consultar el negocio {}", error.getMessage());
+			LOG.error("Error al consultar el negocio: "+error.getMessage());
 			response.setError(error.getMessage());
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	@GetMapping("/negocios/listarNegociosTodos")
+	public ResponseEntity<SimpleResponse> listarNegociosTodos(){
+		SimpleResponse response = new SimpleResponse();
+		try {
+			response.setResult(new ArrayList<NegociosInfoVo>(this.negocioService.getNegociosTodos()));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}catch(Exception error) {
+			LOG.error("Error al consultar los negocios:"+ error.getLocalizedMessage());
+			response.setError(error.getMessage());
+			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	/*@PostMapping("/proveedores/settingPassProveedor")
 	public ResponseEntity<SimpleResponse> settingPassProveedor(@Valid @RequestBody SettingPassProveedorVo credenciales){
 		SimpleResponse srResult = new SimpleResponse();
