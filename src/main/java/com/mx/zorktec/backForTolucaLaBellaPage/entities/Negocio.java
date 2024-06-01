@@ -61,5 +61,5 @@ public class Negocio implements IGenericEntity, Serializable{
 	private String numeroExterior;
 	
 	@Column(name = "isValid")
-	private int isValid;
+	private boolean valido;
 }
