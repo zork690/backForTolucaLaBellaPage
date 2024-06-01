@@ -63,4 +63,9 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 		return this.imagenDao.findAll();
 	}
 
+	@Override
+	public List<Imagen> getOnlyValidImages() {
+		return this.imagenDao.findOnlyValids();
+	}
+
 }
