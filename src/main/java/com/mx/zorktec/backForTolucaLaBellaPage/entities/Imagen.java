@@ -42,6 +42,6 @@ public class Imagen implements IGenericEntity, Serializable {
 	private Negocio idNegocio;
 	
 	@Column(name = "isValid")
-	private int isValid;
+	private boolean valid;
 
 }
