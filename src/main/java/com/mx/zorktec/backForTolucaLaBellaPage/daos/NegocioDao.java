@@ -15,4 +15,5 @@ public interface NegocioDao extends IGenericDao<Negocio>{
 	//public Usuario validarProveedor(CredencialesVo usuario);
 	long conteoNegocios();
 	Optional<List<Negocio>> findAll();
+	Optional<List<Negocio>> findOnlyValids();
 }
