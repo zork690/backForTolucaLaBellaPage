@@ -53,7 +53,7 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		StringBuilder sb = new StringBuilder();
 		sb.append("select count (id) as negocios");
 		sb.append(" from Negocio");
-		sb.append(" WHERE isValid = 1");
+		sb.append(" WHERE valido = 1");
 		String sql = sb.toString();
 		Query<Long> query = super.getSession().createQuery(sql, Long.class);
 		return query.uniqueResult();
@@ -63,7 +63,16 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 	public Optional<List<Negocio>> findAll() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(" from Negocio");
-		sb.append(" where isValid = 1");
+		//sb.append(" where isValid = 1");
+		String sql = sb.toString();
+		return Optional.of((super.getSession().createQuery(sql, Negocio.class).getResultList()));
+	}
+
+	@Override
+	public Optional<List<Negocio>> findOnlyValids() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" from Negocio");
+		sb.append(" where valido = 1");
 		String sql = sb.toString();
 		return Optional.of((super.getSession().createQuery(sql, Negocio.class).getResultList()));
 	}
