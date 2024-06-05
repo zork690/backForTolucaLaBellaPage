@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegociosVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
 
@@ -66,6 +68,25 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 	@Override
 	public List<Imagen> getOnlyValidImages() {
 		return this.imagenDao.findOnlyValids();
+	}
+
+	@Override
+	public void actualizarImagenes(List<ImagenNegocioVo> imagenes) throws NullPointerException {
+		imagenes.forEach((imagen)->{
+			Optional<Imagen> i = this.imagenDao.findById(Imagen.class, imagen.getId());
+			if(i == null) {
+				throw new NullPointerException("imagen no encontrada");
+			}
+			if(i.isPresent()) {
+				Imagen im = i.get();
+				im.setIdNegocio(i.get().getIdNegocio());
+				im.setNombre(i.get().getNombre());
+				im.setValid(imagen.isValid());
+				this.imagenDao.saveOrUpdate(im);
+			}
+		});
+		
+		
 	}
 
 }
