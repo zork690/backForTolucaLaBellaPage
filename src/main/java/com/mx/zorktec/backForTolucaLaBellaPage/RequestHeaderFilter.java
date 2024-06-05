@@ -62,7 +62,10 @@ public class RequestHeaderFilter implements Filter {
 		
 		
 		
-		if(url.contains("/insertarNegocio")) {
+		if(url.contains("/insertarNegocio") 
+				|| url.contains("/actualizarNegocio")
+				|| url.contains("/actualizarImagenes")
+		   ) {
 			if(((HttpServletRequest)request).getHeader("Origin") == null) {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
