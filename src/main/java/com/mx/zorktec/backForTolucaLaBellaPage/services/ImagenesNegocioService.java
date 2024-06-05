@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegociosVo;
 
 public interface ImagenesNegocioService {
@@ -13,5 +14,6 @@ public interface ImagenesNegocioService {
 			, String randomId);
 	public List<Imagen> getAllImages();
 	public List<Imagen> getOnlyValidImages();
+	public void actualizarImagenes(List<ImagenNegocioVo> imagenes) throws NullPointerException;
 
 }
