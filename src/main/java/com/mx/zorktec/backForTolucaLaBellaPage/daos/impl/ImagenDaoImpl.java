@@ -52,4 +52,16 @@ public class ImagenDaoImpl extends GenericDaoImpl<Imagen> implements ImagenDao {
 		return super.getSession().createQuery(sql, Imagen.class).getResultList();
 	}
 
+	@Override
+	public Optional<List<Imagen>> getImagesByIdOnlyValids(String id) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(" from Imagen");
+		sb.append(" where id_negocio = ");
+		sb.append(id);
+		sb.append(" and valid = 1");
+		String sql = sb.toString();
+		Query<Imagen> query = super.getSession().createQuery(sql, Imagen.class);
+		return Optional.of(query.getResultList());
+	}
+
 }
