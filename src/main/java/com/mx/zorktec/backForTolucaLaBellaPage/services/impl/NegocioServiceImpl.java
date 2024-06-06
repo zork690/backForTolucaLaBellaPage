@@ -225,7 +225,7 @@ public class NegocioServiceImpl implements NegocioService{
 	@Override
 	public NegociosInfoVo getNegocioById(String id) throws Exception {
 		Optional<Negocio> negocio = this.negocioDao.findById(Negocio.class, id);
-		Optional<List<Imagen>> imagenes =  this.imagenesDao.getImagesById(id);
+		Optional<List<Imagen>> imagenes =  this.imagenesDao.getImagesByIdOnlyValids(id);
 		if(negocio.isPresent()) {
 			if(imagenes.isPresent()) {
 				NegociosInfoVo negocioVo = new NegociosInfoVo();
@@ -249,6 +249,7 @@ public class NegocioServiceImpl implements NegocioService{
 				negocioVo.setNombrEmpresa(negocio.get().getNombreEmpresa());
 				negocioVo.setNumeroExterior(negocio.get().getNumeroExterior());
 				negocioVo.setImagenes(listImagenNegocio);
+				negocioVo.setValid(negocio.get().isValido());
 				LOG.info("El negocio consultado es: {}", negocioVo);
 				return negocioVo;
 			}else {
