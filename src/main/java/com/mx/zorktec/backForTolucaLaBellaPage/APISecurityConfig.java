@@ -1,34 +1,37 @@
 package com.mx.zorktec.backForTolucaLaBellaPage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
+//import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-//import org.springframework.security.web.AuthenticationEntryPoint;
-//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-//@EnableWebSecurity
-//@Configuration
+@EnableWebSecurity
+@Configuration
 public class APISecurityConfig 
-//extends WebSecurityConfigurerAdapter
+extends WebSecurityConfigurerAdapter
 {
 
 	/*@Autowired
-	private RequestHeaderFilter requestHeaderFilter;
+	private RequestHeaderFilter requestHeaderFilter;*/
 	
 	@Autowired
 	private AuthenticationEntryPoint entryPoint;
 	
 	private static final String[] AUTH_LIST = {
-			"/api/back/tienda/proveedores/insertarProveedor"
-			,"/api/back/tienda/proveedores/settingPassProveedor/*"
-			,"/api/back/tienda/usuarios/login"
-			,"/inicio"
+			"/inicio"
+			, "/ubicaciones"
+			, "/getConteoClientes"
+			, "/negocios/listarNegocios"
+			, "/negocios/listarNegociosTodos"
+			, "/negocios/listarNegocios/{negocioId}"
+			, "/negocios/insertarNegocio"
 	};
 	
 	@Override
@@ -48,12 +51,12 @@ public class APISecurityConfig
 	  return new JWTAuthorizationFilter();
 	}
 
-	@Bean
+	/*@Bean
 	  public FilterRegistrationBean<RequestHeaderFilter> loggingFilter() {
 	    FilterRegistrationBean<RequestHeaderFilter> registrationBean = new FilterRegistrationBean<>();
 	    registrationBean.setFilter(requestHeaderFilter);
 	    registrationBean.addUrlPatterns("/api/back/tienda/*");
 	    //registrationBean.setOrder(1);
 	    return registrationBean;
-	  } */
+	  }*/
 }
