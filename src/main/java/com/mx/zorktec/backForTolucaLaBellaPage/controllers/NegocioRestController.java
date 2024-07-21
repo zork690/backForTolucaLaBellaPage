@@ -60,8 +60,8 @@ public class NegocioRestController {
 			}
 		} 
 		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
-			LOG.info("Proveedor repetido: " ,cExc);
-			srResult.setError("Ya existe un proveedor con el correo o con el teléfono indicado.");
+			LOG.info("Negocio repetido: {} " ,cExc.getLocalizedMessage());
+			srResult.setError("Ya existe un negocio con el correo o con el teléfono indicado.");
 			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
 		 }catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al guardar el negocio:" +e.getLocalizedMessage());
