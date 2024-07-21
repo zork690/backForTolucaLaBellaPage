@@ -32,6 +32,10 @@ extends WebSecurityConfigurerAdapter
 			, "/negocios/listarNegociosTodos"
 			, "/negocios/listarNegocios/{negocioId}"
 			, "/negocios/insertarNegocio"
+			, "/swagger-resources/**"
+			, "/swagger-ui.html"
+			, "/webjars/**"
+			, "/v2/api-docs"
 	};
 	
 	@Override
