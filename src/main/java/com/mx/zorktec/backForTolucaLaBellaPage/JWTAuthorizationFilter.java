@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.authority.SimpleGrantedAuthority;
-//import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
@@ -25,10 +25,10 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 
 public class JWTAuthorizationFilter 
-//extends OncePerRequestFilter
+extends OncePerRequestFilter
 {
 
-	/*private final String HEADER = "Authorization";
+	private final String HEADER = "Authorization";
 	private final String PREFIX = "Bearer ";
 	
 	@Value("${secure.secretKey}")
@@ -36,7 +36,9 @@ public class JWTAuthorizationFilter
 	private static final Logger LOG = LogManager.getLogger(JWTAuthorizationFilter.class);
 	
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+	protected void doFilterInternal(HttpServletRequest request
+			, HttpServletResponse response
+			, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
 			
@@ -90,5 +92,5 @@ public class JWTAuthorizationFilter
 		if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
 			return false;
 		return true;
-	} */
+	}
 }
