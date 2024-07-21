@@ -67,14 +67,14 @@ public class RequestHeaderFilter implements Filter {
 				//|| url.contains("/actualizarImagenes")
 				) 
 		{
-			/*if(((HttpServletRequest)request).getHeader("Origin") == null) {
+			if(((HttpServletRequest)request).getHeader("Origin") == null) {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 			if(!((HttpServletRequest)request).getHeader("Origin").equals("https://tolucalabella.com.mx")) {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
-			}*/
+			}
 			if(authorizationHeader == null) {
 				if(((HttpServletRequest)request).getMethod().equals("OPTIONS")) {
 					httpServletResponse.setHeader("Access-Control-Allow-Headers"
