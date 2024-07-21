@@ -7,19 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
-//import org.springframework.security.core.AuthenticationException;
-//import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 
-//@Component
+@Component
 public class MyCustomExceptionsHandler 
-//implements AuthenticationEntryPoint
+implements AuthenticationEntryPoint
 {
 
-	/*@Override
+	@Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException, ServletException {
         ObjectMapper mapper = new ObjectMapper();
@@ -40,6 +40,6 @@ public class MyCustomExceptionsHandler
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.getWriter().write(mapper.writeValueAsString(sr));
-    } */
+    }
 
 }
