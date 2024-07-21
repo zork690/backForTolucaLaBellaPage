@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class InicioController {
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/inicio", method = RequestMethod.GET)
 	public String listar(Model datosPaVista) {	
 		datosPaVista.addAttribute("titulo", "RUNNING Back For Toluca La Bella Page ...");
 		return "inicio";
