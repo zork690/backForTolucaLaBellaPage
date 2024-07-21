@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 //import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.boot.configurationprocessor.json.JSONException;
 //import org.springframework.boot.configurationprocessor.json.JSONObject;
 //import org.springframework.data.redis.core.RedisTemplate;
@@ -30,25 +30,25 @@ import org.springframework.stereotype.Component;
 public class RequestHeaderFilter implements Filter {
 
 	private static final Logger LOG = LogManager.getLogger(RequestHeaderFilter.class);
-	
+
 	//private int MAX_REQUESTS_PER_MINUTE = 1;
-	
+
 	//@Autowired
 	//private RedisTemplate<String, Integer> requestCountsPerIpAddress;
-	
-	@Value("${secure.mySecretPass}")
-	private String mySecretPass;	
+
+	//@Value("${secure.mySecretPass}")
+	//private String mySecretPass;	
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
-	    HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-	    //ServletRequest requestWrapper = null;
-	    //String body = null;
-	    
-	    final String prefix = "Bearer ";
-		
+
+		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		//ServletRequest requestWrapper = null;
+		//String body = null;
+
+		//final String prefix = "Bearer ";
+
 		LOG.info("GETTING DE REQUEST {} ...",((HttpServletRequest)request).getMethod());
 		LOG.info("ORIGIN: {}",((HttpServletRequest)request).getHeader("Origin"));
 		LOG.info("GETTING THE DATE: "+ new Timestamp(System.currentTimeMillis()));
@@ -57,23 +57,24 @@ public class RequestHeaderFilter implements Filter {
 		LOG.info("GETTING THE IP: "+ipAddress);
 		LOG.info("GETTING THE URL: "+url);
 		final String authorizationHeader = ((HttpServletRequest)request).getHeader("Authorization");
-		final String token;
+		//final String token;
 		LOG.info("AUTHORIZATION HEADER: "+authorizationHeader);
-		
-		
-		
+
+
+
 		if(url.contains("/insertarNegocio") 
-				|| url.contains("/actualizarNegocio")
-				|| url.contains("/actualizarImagenes")
-		   ) {
-			if(((HttpServletRequest)request).getHeader("Origin") == null) {
+				//|| url.contains("/actualizarNegocio")
+				//|| url.contains("/actualizarImagenes")
+				) 
+		{
+			/*if(((HttpServletRequest)request).getHeader("Origin") == null) {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 			if(!((HttpServletRequest)request).getHeader("Origin").equals("https://tolucalabella.com.mx")) {
 				httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
-			}
+			}*/
 			if(authorizationHeader == null) {
 				if(((HttpServletRequest)request).getMethod().equals("OPTIONS")) {
 					httpServletResponse.setHeader("Access-Control-Allow-Headers"
@@ -83,13 +84,16 @@ public class RequestHeaderFilter implements Filter {
 					httpServletResponse.setHeader("Access-Control-Allow-Origin"
 							,((HttpServletRequest)request).getHeader("Origin"));
 					httpServletResponse.setHeader("Access-Control-Max-Age", "1800");
-				    //httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
-				    httpServletResponse.setStatus(200);
-				}else {
-					httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+					//httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+					httpServletResponse.setStatus(200);
 				}
-				
-			}else{
+				chain.doFilter(request, response);
+				/*else {
+					httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				}*/
+
+			}
+			/*else{
 				LOG.info("Authorization: "+authorizationHeader);
 				if(authorizationHeader.startsWith(prefix)) {
 					token = authorizationHeader.replace(prefix, "");
@@ -102,20 +106,21 @@ public class RequestHeaderFilter implements Filter {
 				}else {
 					httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				}
-			}
-		}else {
+			}*/
+		}
+		else {
 			chain.doFilter(request, response);
 		}
-		
-		
-		
-		
-		
+
+
+
+
+
 		/*if(url.contains("/insertarProveedor")) {
 			requestWrapper = this.creatingRequestWrapper(request, requestWrapper);
 			body = this.gettingBody(requestWrapper);
 		}*/
-		
+
 		/*if(body != null) {
 			if(isMaximumRequestsPerSecondExceeded(this.gettingEmail(body))){
 				httpServletResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
@@ -123,77 +128,77 @@ public class RequestHeaderFilter implements Filter {
 		        return;
 			}
 		}*/
-		
-		
+
+
 		/*if(Objects.isNull(requestWrapper)){
 			chain.doFilter(request, response);
         } else {
             chain.doFilter(requestWrapper, response);
         }*/
-		
+
 	}
-	
+
 	/*private boolean isMaximumRequestsPerSecondExceeded(String email){
 	      Integer requests = 0;
 	      final ValueOperations<String, Integer> operations = this.requestCountsPerIpAddress.opsForValue();
 	      boolean ipKey = this.requestCountsPerIpAddress.hasKey(email);
-	      
+
 	      if (ipKey){
 	    	  requests = operations.get(email);
 	          if(requests > MAX_REQUESTS_PER_MINUTE) {
 	        	  requestCountsPerIpAddress.delete(email);
 	        	  return true;
 		      }
-	    	  
+
 	      }else {
 	    	  requests = 0;
-	    	  
+
 	      }
 	      requests++;
     	  operations.set(email, requests, 5, TimeUnit.MINUTES);
-	      
+
 	      return false;
-	     
+
 	}*/
-	
+
 	private static String getClientIpAddr(HttpServletRequest request) {  
-	    String ip = request.getHeader("X-Forwarded-For");  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("Proxy-Client-IP");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("WL-Proxy-Client-IP");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("HTTP_X_FORWARDED");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("HTTP_CLIENT_IP");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("HTTP_FORWARDED_FOR");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("HTTP_FORWARDED");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("HTTP_VIA");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getHeader("REMOTE_ADDR");  
-	    }  
-	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
-	        ip = request.getRemoteAddr();  
-	    }  
-	    return ip;  
+		String ip = request.getHeader("X-Forwarded-For");  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("Proxy-Client-IP");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("WL-Proxy-Client-IP");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("HTTP_X_FORWARDED");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("HTTP_CLIENT_IP");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("HTTP_FORWARDED_FOR");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("HTTP_FORWARDED");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("HTTP_VIA");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getHeader("REMOTE_ADDR");  
+		}  
+		if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+			ip = request.getRemoteAddr();  
+		}  
+		return ip;  
 	}
-	
+
 	/*private ServletRequest creatingRequestWrapper(ServletRequest request, ServletRequest requestWrapper) {
 		requestWrapper = new RequestHttpWrapper((HttpServletRequest)request);
 		return requestWrapper;
@@ -210,9 +215,9 @@ public class RequestHeaderFilter implements Filter {
 			LOG.error("Error obteniendo el body: "+e.getMessage());
 			return body;
 		}
-		
+
 	}*/
-	
+
 	/*private String gettingEmail(String body) {
 		try {
 			final JSONObject payload = new JSONObject(body);
