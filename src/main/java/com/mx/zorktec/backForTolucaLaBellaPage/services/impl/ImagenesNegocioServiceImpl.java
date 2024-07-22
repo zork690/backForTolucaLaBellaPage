@@ -21,6 +21,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegociosVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
+import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
 
 @Service
 public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
@@ -39,9 +40,11 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 		LOG.info("DIRECTORY PATH: {}", this.basePath);
 		
 		imagenes.forEach((imagen)->{
+			String timeStamp = Utilities.generateTimeStampString();
+			String nombreImagen = timeStamp+"_"+imagen.getNombre();
 			String base64 = imagen.getBaseContent();
 			byte[] data = DatatypeConverter.parseBase64Binary(base64);
-			String path = this.basePath+"/"+imagen.getNombre();
+			String path = this.basePath+"/"+nombreImagen;
 			File file = new File(path);
 			
 			try {
@@ -50,7 +53,7 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 				LOG.info("URL: {}",path);
 				LOG.info("Saving data into table..");
 				Imagen i = new Imagen();
-				i.setNombre(imagen.getNombre());
+				i.setNombre(nombreImagen);
 				i.setIdNegocio(negocio);
 				this.imagenDao.saveOrUpdate(i);
 			}catch(Exception e) {
