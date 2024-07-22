@@ -1,5 +1,7 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.utilities;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.Year;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +20,12 @@ public class Utilities {
 	public static final String generateIdForClient() {
 		Long ms = System.currentTimeMillis();
 		return String.valueOf(ms);
+	}
+	
+	
+	public static final String generateTimeStampString() {
+		Timestamp ts = Timestamp.from(Instant.now());
+		return String.valueOf(ts.getTime());
 	}
 
 }
