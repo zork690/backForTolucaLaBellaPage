@@ -1,17 +1,8 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.services.impl;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,34 +11,26 @@ import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.mx.zorktec.backForTolucaLaBellaPage.daos.PermisosPerfilesDAO;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.UbicacionesDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.PermisosPerfil;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.Proveedor;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Ubicacion;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.LoginVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.PermisosVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateNegocioVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
-import com.mx.zorktec.backForTolucaLaBellaPage.services.EnviaEmailService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.UsuarioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class NegocioServiceImpl implements NegocioService{
@@ -66,6 +49,9 @@ public class NegocioServiceImpl implements NegocioService{
 	@Autowired
 	private ImagenDao imagenesDao;
 	
+	@Autowired
+	private UsuarioService usuarioService;
+	
 	//@Autowired
 	//private PermisosPerfilesDAO permisosDao;
 	
@@ -82,21 +68,29 @@ public class NegocioServiceImpl implements NegocioService{
 	private int timeTokenMs;
 	
 	@Override
+	@Transactional
 	public void insertarNegocio(NegocioVo negocio) {
 		String randomId = Utilities.generateIdForClient();
+		
+		this.usuarioService.insertarUsuario(this.usuarioService.generateUsuarioVo(negocio));
+		Usuario usuario = this.usuarioService.getByEmail(negocio.getCorreo());
+		
+		if(usuario == null) {
+			throw new NullPointerException("Usuario no encontrado por el email: "+negocio.getCorreo());
+		}
+		
 		LOG.info("RANDOM STRING: "+randomId);
 		Negocio p = new Negocio();
 		p.setIdNegocio(randomId);
+		p.setIdUsuario(usuario);
 		p.setCalle(negocio.getCalle());
 		p.setCategoria(negocio.getCategoria());
-		p.setEmail(negocio.getCorreo());
 		p.setDescripcion(negocio.getDescripcionComercial());
 		
 		Ubicacion u = this.ubicacionesDao
 				.findById(Ubicacion.class, Integer.parseInt(negocio.getIdUbicacion())).orElse(null);
 		p.setIdUbicacion(u);
 		
-		p.setNombre(negocio.getNombre());
 		p.setNombreEmpresa(negocio.getNombreEmpresa());
 		p.setNumeroExterior(negocio.getNumeroExterior());
 		p.setTelefono(negocio.getTelefono());
@@ -118,14 +112,12 @@ public class NegocioServiceImpl implements NegocioService{
 		if(p.isPresent()) {
 			Negocio n = p.get();
 		n.setCalle(negocio.getCalle());
-		n.setEmail(negocio.getCorreo());
 		n.setDescripcion(negocio.getDescripcionComercial());
 		
 		Ubicacion u = this.ubicacionesDao
 				.findById(Ubicacion.class, Integer.parseInt(negocio.getIdUbicacion())).orElse(null);
 		n.setIdUbicacion(u);
 		
-		n.setNombre(negocio.getNombre());
 		n.setNombreEmpresa(negocio.getNombreEmpresa());
 		n.setNumeroExterior(negocio.getNumeroExterior());
 		n.setTelefono(negocio.getTelefono());
@@ -150,9 +142,9 @@ public class NegocioServiceImpl implements NegocioService{
 			
 			negociosVo.setId(negocio.getId());
 			negociosVo.setIdNegocio(negocio.getIdNegocio());
-			negociosVo.setNombre(negocio.getNombre());
+			negociosVo.setNombre(negocio.getIdUsuario().getNombre());
 			negociosVo.setTelefono(negocio.getTelefono());
-			negociosVo.setEmail(negocio.getEmail());
+			negociosVo.setEmail(negocio.getIdUsuario().getEmail());
 			negociosVo.setUbicacion(negocio.getIdUbicacion());
 			negociosVo.setDescripcion(negocio.getDescripcion());
 			negociosVo.setCalle(negocio.getCalle());
@@ -193,9 +185,9 @@ public class NegocioServiceImpl implements NegocioService{
 
 			negociosVo.setId(negocio.getId());
 			negociosVo.setIdNegocio(negocio.getIdNegocio());
-			negociosVo.setNombre(negocio.getNombre());
+			negociosVo.setNombre(negocio.getIdUsuario().getNombre());
 			negociosVo.setTelefono(negocio.getTelefono());
-			negociosVo.setEmail(negocio.getEmail());
+			negociosVo.setEmail(negocio.getIdUsuario().getEmail());
 			negociosVo.setUbicacion(negocio.getIdUbicacion());
 			negociosVo.setDescripcion(negocio.getDescripcion());
 			negociosVo.setCalle(negocio.getCalle());
@@ -239,9 +231,9 @@ public class NegocioServiceImpl implements NegocioService{
 				});
 				negocioVo.setId(negocio.get().getId());
 				negocioVo.setIdNegocio(negocio.get().getIdNegocio());
-				negocioVo.setNombre(negocio.get().getNombre());
+				negocioVo.setNombre(negocio.get().getIdUsuario().getNombre());
 				negocioVo.setTelefono(negocio.get().getTelefono());
-				negocioVo.setEmail(negocio.get().getEmail());
+				negocioVo.setEmail(negocio.get().getIdUsuario().getEmail());
 				negocioVo.setUbicacion(negocio.get().getIdUbicacion());
 				negocioVo.setDescripcion(negocio.get().getDescripcion());
 				negocioVo.setCalle(negocio.get().getCalle());
@@ -344,11 +336,11 @@ public class NegocioServiceImpl implements NegocioService{
 		return loginVo;
 	}*/
 	
-	private String setJWTToken(String username) {
+	/*private String setJWTToken(String username) {
 		
 		LOG.info("GENERATING JWT TOKEN...");
 		
-		/*List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList("ROLE_USER");
 		
 		@SuppressWarnings("deprecation")
@@ -365,7 +357,7 @@ public class NegocioServiceImpl implements NegocioService{
 				.signWith(SignatureAlgorithm.HS512,
 						this.secretKey.getBytes()).compact();
 
-		return "Bearer " + token;*/
+		return "Bearer " + token;
 		return "";
-	}
+	}*/
 }
