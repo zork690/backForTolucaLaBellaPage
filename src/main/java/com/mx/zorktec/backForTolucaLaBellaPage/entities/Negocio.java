@@ -32,30 +32,28 @@ public class Negocio implements IGenericEntity, Serializable{
 	@Column(name ="id_negocio")
 	private String idNegocio;
 	
-	@Column(name ="nombre")
-	private String nombre;
+	@ManyToOne
+	@JoinColumn(name="id_usuario", referencedColumnName="id_usuario")
+	private Usuario idUsuario;
 	
 	@Column(name ="telefono")
 	private String telefono;
-	
-	@Column(name = "correo")
-	private String email;
 	
 	@ManyToOne
 	@JoinColumn(name="id_ubicacion", referencedColumnName="id")
 	private Ubicacion idUbicacion;
 	
-	@Column(name = "descripcion")
-	private String descripcion;
-	
-	@Column(name = "calle")
-	private String calle;
-	
 	@Column(name = "categoria")
 	private String categoria;
 	
+	@Column(name = "descripcion")
+	private String descripcion;
+	
 	@Column(name = "nombre_empresa")
 	private String nombreEmpresa;
+	
+	@Column(name = "calle")
+	private String calle;
 	
 	@Column(name = "numero_exterior")
 	private String numeroExterior;
