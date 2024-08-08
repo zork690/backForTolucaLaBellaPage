@@ -81,8 +81,8 @@ extends KeycloakWebSecurityConfigurerAdapter
 	protected void configure(HttpSecurity http) throws Exception {
 		super.configure(http);
 		http.csrf().disable()
-        	//.exceptionHandling().authenticationEntryPoint(entryPoint)
-        	//.and()
+        	.exceptionHandling().authenticationEntryPoint(entryPoint)
+        	.and()
 			//.addFilterAfter(myFilter(), UsernamePasswordAuthenticationFilter.class)
 			.authorizeRequests()
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
