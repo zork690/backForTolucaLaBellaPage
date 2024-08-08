@@ -27,16 +27,16 @@ implements AuthenticationEntryPoint
         
         sr.setError(e.getMessage());
         
-        if(httpServletRequest.getAttribute("expired") != null){
+        /*if(httpServletRequest.getAttribute("expired") != null){
         	sr.setError("JWT Token expired");
         }
         
         if(httpServletRequest.getAttribute("badSignature") != null){
         	sr.setError("JWT Token signature exception");
-        }
+        }*/
         
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.getWriter().write(mapper.writeValueAsString(sr));
