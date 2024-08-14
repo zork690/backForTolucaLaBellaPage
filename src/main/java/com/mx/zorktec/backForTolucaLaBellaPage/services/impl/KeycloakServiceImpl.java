@@ -20,7 +20,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.LoginVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.RegistroVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ResponseAccessTokenVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioKeycloakVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.KeycloakService;
 
@@ -71,6 +73,30 @@ public class KeycloakServiceImpl implements KeycloakService {
 		this.sendRegistrationRequest(this.generateAccessToken(), usuarioKeycloak);
 	}
 	
+	@Override
+	public ResponseAccessTokenVo loginUsuario(LoginVo usuario) throws JSONException, RestClientException {
+		LOG.info("Haciendo login ...");
+		JSONObject responseJsonObject = this.generateAccessToken(usuario);
+		ResponseAccessTokenVo responseAcessTokenVo = new ResponseAccessTokenVo();
+		responseAcessTokenVo.setAccessToken(responseJsonObject.getString("access_token"));
+		responseAcessTokenVo.setExpiresIn(
+				Integer.parseInt(responseJsonObject.getString("expires_in"))
+				);
+		responseAcessTokenVo.setRefreshExpiresIn(
+				Integer.parseInt(responseJsonObject.getString("refresh_expires_in"))
+				);
+		responseAcessTokenVo.setRefreshToken(responseJsonObject.getString("refresh_token"));
+		responseAcessTokenVo.setTokenType(responseJsonObject.getString("token_type"));
+		responseAcessTokenVo.setNotBeforePolicy(
+				Integer.parseInt(responseJsonObject.getString("not-before-policy"))
+				);
+		responseAcessTokenVo.setSessionState(responseJsonObject.getString("session_state"));
+		responseAcessTokenVo.setScope(responseJsonObject.getString("scope"));
+		
+		return responseAcessTokenVo;
+		
+	}
+	
 	private void sendRegistrationRequest(String token, UsuarioKeycloakVo usuario) throws RestClientException {
 		RestTemplate restTemplateRegister = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
@@ -87,6 +113,10 @@ public class KeycloakServiceImpl implements KeycloakService {
 				, String.class).getBody();
 		
 		LOG.info("Respuesta del registro: {}", response);
+	}
+	
+	private void sendConfirmationEmailRequest() {
+		
 	}
 	
 	
@@ -114,6 +144,30 @@ public class KeycloakServiceImpl implements KeycloakService {
 		token = jsonObject.getString("access_token");
 		LOG.info("Keycloak token generado: {}", token);
 		return token;
+	}
+	
+	
+	private JSONObject generateAccessToken(LoginVo usuario) throws JSONException, RestClientException {
+		RestTemplate restTemplateToken = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("grant_type", this.grantType);
+		map.add("client_id", this.clientId);
+		map.add("client_secret", this.clientSecret);
+		map.add("username", usuario.getEmail());
+		map.add("password", usuario.getPassword());
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+		LOG.info("Token solicitud: {}", entity.getBody());
+		String jsonResponse = restTemplateToken.exchange(tokenUrl
+				, HttpMethod.POST
+				, entity
+				, String.class).getBody();
+
+		JSONObject jsonObject;
+
+		jsonObject = new JSONObject(jsonResponse);
+		return jsonObject;
 	}
 
 }
