@@ -49,6 +49,7 @@ extends KeycloakWebSecurityConfigurerAdapter
 			, "/negocios/listarNegocios/{negocioId}"
 			, "/negocios/insertarNegocio"
 			, "/usuarios/registrar"
+			, "/usuarios/login"
 			, "/swagger-resources/**"
 			, "/swagger-ui.html"
 			, "/webjars/**"
