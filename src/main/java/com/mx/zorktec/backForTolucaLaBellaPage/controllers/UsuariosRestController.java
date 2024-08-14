@@ -58,34 +58,20 @@ public class UsuariosRestController {
 		}
 	}
 
-	/*@PostMapping("/login")
-	public ResponseEntity<SimpleResponse> validarUsuario(@RequestBody UsuarioVo usuarioValidar) {
+	@PostMapping("/login")
+	public ResponseEntity<SimpleResponse> loginUusario(@RequestBody LoginVo usuario) {
 
 		SimpleResponse response = new SimpleResponse();
 		try {
-
-			LoginVo login = proveedorService.validarProveedor(usuarioValidar);
-			if (login == null) {
-				response.setError("No se encontró el usuario a validar");
-				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-			}
-			response.setResult(login);
+			response.setResult(this.keycloakService.loginUsuario(usuario));
 			return new ResponseEntity<>(response, HttpStatus.OK);
 
-		} catch (DataAccessException e) {
-			LOG.info("Ocurrio un error al validar al usuario: " ,e);
+		} catch (DataAccessException | JSONException | RestClientException e) {
+			LOG.info("Ocurrio un error al loguear al usuario: {} " ,e.getMessage());
 			response.setError(e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (NoSuchFieldException e) {
-			LOG.info("Error al validar a el usuario: " ,e);
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (IllegalAccessException e) {
-			LOG.info("Error al momento de validar el usuario " ,e);
-			response.setError(e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
 		}
-	}*/
+	}
 
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
