@@ -1,5 +1,8 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.services;
 
+import java.util.List;
+
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.client.RestClientException;
 
@@ -10,4 +13,6 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ResponseAccessTokenVo
 public interface KeycloakService {
 	public void registrarUsuario(RegistroVo usuario) throws JSONException, RestClientException;
 	public ResponseAccessTokenVo loginUsuario(LoginVo usuario) throws JSONException, RestClientException;
+	public void enviarEmail(String email) throws Exception;
+	public void resetPassword(String email) throws Exception;
 }
