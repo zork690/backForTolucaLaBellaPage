@@ -1,10 +1,17 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.services.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -17,6 +24,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.gson.Gson;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
@@ -51,7 +59,18 @@ public class KeycloakServiceImpl implements KeycloakService {
 	
 	@Value("${zorktech.keycloak.url.register}")
 	private String urlRegister;
+	
+	/*@Value("${zorktech.keycloak.url.send.mail}")
+	private String urlSendMail;*/
+	
+	@Value("${zorktech.keycloak.url.execute.actions.mail}")
+	private String urlSendMail;
+	
+	@Value("${keycloak.realm}")
+	private String realm;
 
+	@Autowired
+    Keycloak keycloak;
 
 	@Override
 	public void registrarUsuario(RegistroVo usuario) throws JSONException, RestClientException {
@@ -97,6 +116,48 @@ public class KeycloakServiceImpl implements KeycloakService {
 		
 	}
 	
+	@Override
+	public void enviarEmail(String email) throws Exception {
+		List<UserRepresentation> userList = this.findUserByEmail(email);
+		if(userList.isEmpty()) {
+			throw new Exception("Email no ha sido encontrado");
+		}
+		UserRepresentation userRepresentation = userList.stream().findFirst().orElse(null);
+		this.sendConfirmationEmailRequest(this.generateAccessToken(), userRepresentation.getId()
+				, new String[] {"VERIFY_EMAIL"});
+	}
+	
+	@Override
+	public void resetPassword(String email) throws Exception {
+		List<UserRepresentation> userList = this.findUserByEmail(email);
+		if(userList.isEmpty()) {
+			throw new Exception("Email no ha sido encontrado");
+		}
+		UserRepresentation userRepresentation = userList.stream().findFirst().orElse(null);
+		this.sendConfirmationEmailRequest(this.generateAccessToken(), userRepresentation.getId()
+				, new String[] {"UPDATE_PASSWORD"});
+	}
+	
+	private List<UserRepresentation> findUserByEmail(String email){
+		boolean exact = true;
+		List<UserRepresentation> user = this.keycloak.realm(this.realm)
+				.users()
+				.searchByEmail(email, exact);
+		
+		LOG.info("User with email {}", user.stream()
+				.map(u->u.getEmail())
+				.collect(Collectors.toList())
+				);
+		
+		LOG.info("ID: {}", user.stream()
+				.map(u->
+					u.getId()
+					)
+				.collect(Collectors.toList())
+				);
+		return user;
+	}
+	
 	private void sendRegistrationRequest(String token, UsuarioKeycloakVo usuario) throws RestClientException {
 		RestTemplate restTemplateRegister = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
@@ -115,8 +176,29 @@ public class KeycloakServiceImpl implements KeycloakService {
 		LOG.info("Respuesta del registro: {}", response);
 	}
 	
-	private void sendConfirmationEmailRequest() {
+	private void sendConfirmationEmailRequest(String token, String idUser
+			,String[] bodyArray) throws RestClientException {
+		Map<String, String> urlParamsMap = new HashMap<String, String>();
+		urlParamsMap.put("id", idUser);
 		
+		UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromUriString(this.urlSendMail);	
+		String url  = urlBuilder.buildAndExpand(urlParamsMap).toUriString();
+		
+		LOG.info("URL to send email: {}", url);
+		
+		RestTemplate restTemplateRegister = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, "application/json");
+		headers.set(HttpHeaders.CONTENT_TYPE, "application/json");
+		headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+token);		
+		
+		LOG.info("body Array: {}", Arrays.toString(bodyArray));
+		
+		HttpEntity<String[]> entity = new HttpEntity<String[]>(bodyArray, headers);
+		restTemplateRegister.exchange(url
+				, HttpMethod.PUT
+				, entity
+				, String[].class).getBody();
 	}
 	
 	
@@ -169,5 +251,4 @@ public class KeycloakServiceImpl implements KeycloakService {
 		jsonObject = new JSONObject(jsonResponse);
 		return jsonObject;
 	}
-
 }
