@@ -15,9 +15,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 
@@ -39,6 +41,38 @@ public class UsuariosRestController {
 
 	@Autowired
 	private KeycloakService keycloakService;
+	
+	@GetMapping("/enviarEmailConfirmacion")
+	public ResponseEntity<SimpleResponse> enviarEmail(@RequestParam String email) {
+
+		SimpleResponse response = new SimpleResponse();
+		try {
+			this.keycloakService.enviarEmail(email);
+			response.setResult("email enviado ...");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+
+		} catch (Exception e) {
+			LOG.error("Ocurrio un error al enviar email: {}", e.getMessage());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+		}
+	}
+	
+	@GetMapping("/resetPassword")
+	public ResponseEntity<SimpleResponse> resetPassword(@RequestParam String email) {
+
+		SimpleResponse response = new SimpleResponse();
+		try {
+			this.keycloakService.resetPassword(email);
+			response.setResult("email enviado ...");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+
+		} catch (Exception e) {
+			LOG.error("Ocurrio un error al enviar email: {}", e.getLocalizedMessage());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+		}
+	}
 
 	@PostMapping("/registrar")
 	public ResponseEntity<SimpleResponse> registrarUsuario(@Validated @RequestBody RegistroVo usuario) {
@@ -47,8 +81,9 @@ public class UsuariosRestController {
 		try {
 			LOG.info("Usuario a registrar: {}", usuario.toString());
 			this.keycloakService.registrarUsuario(usuario);
-			
-			response.setResult("Usuario registrado correctamente...");
+			UsuarioVo usuarioVo = new UsuarioVo();
+			usuarioVo.setEmail(usuario.getCorreo());
+			response.setResult(usuarioVo);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 
 		} catch (DataAccessException | JSONException | RestClientException e) {
