@@ -45,7 +45,6 @@ extends KeycloakWebSecurityConfigurerAdapter
 			, "/ubicaciones"
 			, "/getConteoClientes"
 			, "/negocios/listarNegocios"
-			, "/negocios/listarNegociosTodos"
 			, "/negocios/listarNegocios/{negocioId}"
 			, "/negocios/insertarNegocio"
 			, "/usuarios/registrar"
