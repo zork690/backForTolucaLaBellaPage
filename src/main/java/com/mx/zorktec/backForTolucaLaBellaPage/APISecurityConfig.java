@@ -55,6 +55,8 @@ extends KeycloakWebSecurityConfigurerAdapter
 			, "/swagger-ui.html"
 			, "/webjars/**"
 			, "/v2/api-docs"
+			, "/categorias/listarCategorias"
+			, "/subcategorias/listar"
 	};
 	
 	@Autowired
