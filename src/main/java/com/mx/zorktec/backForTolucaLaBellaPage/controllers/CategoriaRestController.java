@@ -60,8 +60,8 @@ public class CategoriaRestController {
 			srResult.setResult("Categoría insertada o actualizada correctamente");
 		} 
 		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
-			LOG.info("Categoría repetida: {} " ,cExc.getLocalizedMessage());
-			srResult.setError("Ya existe una categoría con ese nombre.");
+			LOG.info("Violación de reglas al insertar o actualizar categoría: {}" ,cExc.getLocalizedMessage());
+			srResult.setError("Violación de reglas al insertar o actualizar categoría.");
 			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
 		}catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al guardar la categoría: {}", e.getLocalizedMessage());
