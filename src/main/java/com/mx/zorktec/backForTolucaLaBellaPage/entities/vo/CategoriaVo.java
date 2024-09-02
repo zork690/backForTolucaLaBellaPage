@@ -25,7 +25,7 @@ public class CategoriaVo implements Serializable{
 	private String categoria;
 	
 	@NotBlank(message="Imagen requerida")
-	@Pattern(message="Imagen solo letras sin acentos ni ñes", regexp = "^[a-zA-Z ]+$")
+	@Pattern(message="Imagen solo letras sin acentos ni ñes", regexp = "^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{4})$")
 	private String imagen;
 
 	private boolean valid;
