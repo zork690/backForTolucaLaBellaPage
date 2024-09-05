@@ -24,13 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.LoginVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.RegistroVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioKeycloakVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.KeycloakService;
-import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
 
 @RestController
 @CrossOrigin(origins = {"*"})
@@ -44,7 +41,7 @@ public class UsuariosRestController {
 	
 	@GetMapping("/enviarEmailConfirmacion")
 	public ResponseEntity<SimpleResponse> enviarEmail(@RequestParam String email) {
-
+		//HERE requestparam email is null
 		SimpleResponse response = new SimpleResponse();
 		try {
 			this.keycloakService.enviarEmail(email);
