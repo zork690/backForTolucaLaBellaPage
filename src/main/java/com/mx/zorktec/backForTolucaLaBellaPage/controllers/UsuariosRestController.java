@@ -41,7 +41,6 @@ public class UsuariosRestController {
 	
 	@GetMapping("/enviarEmailConfirmacion")
 	public ResponseEntity<SimpleResponse> enviarEmail(@RequestParam String email) {
-		//HERE requestparam email is null
 		SimpleResponse response = new SimpleResponse();
 		try {
 			this.keycloakService.enviarEmail(email);
