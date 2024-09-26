@@ -15,6 +15,6 @@ public class ImagenArticuloVo implements Serializable{
 	
 	private int id;
 	private String nombre;
-	private String idArticulo;
+	private int idArticulo;
 	private boolean valid;
 }
