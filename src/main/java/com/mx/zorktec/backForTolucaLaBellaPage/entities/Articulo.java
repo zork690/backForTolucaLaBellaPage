@@ -23,7 +23,7 @@ public class Articulo implements IGenericEntity, Serializable{
 	private static final long serialVersionUID = 1560696836789L;
 	
 	@Id
-	@Column(name ="id")
+	@Column(name ="id_articulo")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
