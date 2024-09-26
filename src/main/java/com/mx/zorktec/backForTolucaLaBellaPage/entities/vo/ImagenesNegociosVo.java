@@ -5,8 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ImagenesNegociosVo {
+public class ImagenesNegociosVo extends ImagenesFromStringVo{
 
-	private String nombre;
-	private String baseContent;
 }
