@@ -2,6 +2,7 @@ package com.mx.zorktec.backForTolucaLaBellaPage.controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,9 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloReceivedVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesArticuloVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ListUpdateArticuloImagesVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateArticuloImagesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ArticuloService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesArticuloService;
 
 @RestController
 @CrossOrigin(origins = {"*"})
@@ -37,6 +40,9 @@ public class PanelSociosController {
 
 	@Autowired
 	private ArticuloService articuloService;
+
+	@Autowired
+	private ImagenesArticuloService imagenesArticuloService;
 
 	@PostMapping("/articulos/insertar")
 	public ResponseEntity<SimpleResponse> insertarArticulo(@Validated @RequestBody ArticuloReceivedVo articulo){
@@ -62,7 +68,49 @@ public class PanelSociosController {
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
+
+	@PostMapping("/articulos/imagenes/insertar")
+	public ResponseEntity<SimpleResponse> insertarImagenArticulo(@Validated @RequestBody ImagenesArticuloVo imagenes){
+		SimpleResponse srResult = new SimpleResponse();
+
+		try {
+			LOG.info("Imágenes recibidas:");
+			this.imagenesArticuloService.processingImagefromArticulo(imagenes);
+			srResult.setResult("Imágenes insertadas correctamente");
+
+		} 
+		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
+			LOG.info("Violación de regla de integridad al insertar imágenes: {} " ,cExc.getLocalizedMessage());
+			srResult.setError("Violación de regla de integridad al insertar imágenes "
+					+ cExc.getLocalizedMessage());
+			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
+		}catch (Exception e) {
+			LOG.error("Ocurrio un error al guardar las imágenes: {}", e.getLocalizedMessage());
+			srResult.setError("Existe un problema accesando a la base.");
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		srResult.setMessage("OK");
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
+	}
+
+	@PostMapping("/articulos/imagenes/editar")
+	public ResponseEntity<SimpleResponse> actualizarImagenes(
+			@RequestBody
+			@Validated
+			ListUpdateArticuloImagesVo imagenes
+			){
+		SimpleResponse srResult = new SimpleResponse();
+		Map<String, String> resultados =  this.imagenesArticuloService.updateImages(imagenes);
+		if(resultados.isEmpty()) {
+			srResult.setResult("Imágenes actualizadas correctamente");
+			srResult.setMessage("OK");
+		}else {
+			srResult.setError("Errores al editar imagenes");
+			srResult.setValidations(resultados);
+		}
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
+	}
+
 	@GetMapping("/articulos/listar")
 	public ResponseEntity<SimpleResponse> listarArticulos(){
 		SimpleResponse response = new SimpleResponse();
