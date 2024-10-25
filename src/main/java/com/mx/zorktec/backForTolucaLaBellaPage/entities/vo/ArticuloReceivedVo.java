@@ -29,6 +29,10 @@ public class ArticuloReceivedVo implements Serializable{
 	@Pattern(message="Descripción del artículo contiene carácteres no permitidos", regexp = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ.,\"\\-$()¿?!¡%&\\n\\r“”:; ]+$")
 	private String descripcion;
 	
+	@NotBlank(message="Id de la noticia es requerido")
+	@Pattern(message="Id noticia solo números", regexp = "^[0-9]+$")
+	private String idNoticia;
+	
 	private boolean valid;
 
 }
