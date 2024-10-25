@@ -1,12 +1,15 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -35,5 +38,12 @@ public class Articulo implements IGenericEntity, Serializable{
 	
 	@Column(name = "isValid")
 	private boolean valido;
+	
+	@Column(name = "fecha")
+	private Timestamp fecha;
+	
+	@ManyToOne
+	@JoinColumn(name="noticia", referencedColumnName="id_noticia")
+	private Noticia noticia; 
 
 }
