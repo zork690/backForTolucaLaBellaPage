@@ -19,5 +19,7 @@ public class ArticuloVo implements Serializable{
 	private String descripcion;
 	private List<ImagenArticuloVo> imagenes;
 	private boolean valid;
+	private String noticia;
+	private String fecha;
 
 }
