@@ -1,8 +1,6 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,12 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloReceivedVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesArticuloVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ListUpdateArticuloImagesVo;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateArticuloImagesVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NoticiaVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ArticuloService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesArticuloService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.NoticiaService;
 
 @RestController
 @CrossOrigin(origins = {"*"})
@@ -43,6 +41,9 @@ public class PanelSociosController {
 
 	@Autowired
 	private ImagenesArticuloService imagenesArticuloService;
+	
+	@Autowired
+	private NoticiaService noticiaService;
 
 	@PostMapping("/articulos/insertar")
 	public ResponseEntity<SimpleResponse> insertarArticulo(@Validated @RequestBody ArticuloReceivedVo articulo){
@@ -110,19 +111,33 @@ public class PanelSociosController {
 		}
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
+	
+	
+	@PostMapping("/noticias/crear")
+	public ResponseEntity<SimpleResponse> crearNoticia(@Validated @RequestBody NoticiaVo noticia){
+		SimpleResponse srResult = new SimpleResponse();
 
-	@GetMapping("/articulos/listar")
-	public ResponseEntity<SimpleResponse> listarArticulos(){
-		SimpleResponse response = new SimpleResponse();
 		try {
-			response.setResult(new ArrayList<ArticuloVo>(this.articuloService.getArticulos()));
-			return new ResponseEntity<>(response, HttpStatus.OK);
-		}catch(Exception error) {
-			LOG.error("Error al consultar los articulos del socio: "+ error.getMessage());
-			response.setError(error.getMessage());
-			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			LOG.info("Noticia recibida: {}",noticia.getNoticia());
+
+			this.noticiaService.insertarNoticia(noticia);
+			srResult.setResult("Noticia insertada o editada correctamente");
+
+		} 
+		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
+			LOG.info("Noticia con error de integridad en la base: {} " ,cExc.getLocalizedMessage());
+			srResult.setError("Existe un error de integridad al insertar o editar noticia: "
+					+ cExc.getLocalizedMessage());
+			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
+		}catch (DataAccessException e) {
+			LOG.error("Ocurrio un error al guardar la noticia: {}", e.getLocalizedMessage());
+			srResult.setError("Existe un problema accesando a la base.");
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		srResult.setMessage("OK");
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
+	
 
 	@GetMapping("/listarNegocios")
 	public ResponseEntity<SimpleResponse> listarNegocios(){
@@ -136,6 +151,8 @@ public class PanelSociosController {
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<SimpleResponse> handleValidationExceptions(
