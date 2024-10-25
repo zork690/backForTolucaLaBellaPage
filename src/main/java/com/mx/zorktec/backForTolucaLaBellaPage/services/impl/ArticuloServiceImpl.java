@@ -1,5 +1,6 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.services.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.ArticuloDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Articulo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.ImagenArticulo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Noticia;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloReceivedVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenArticuloVo;
@@ -17,10 +19,10 @@ import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesArticuloService;
 
 @Service
 public class ArticuloServiceImpl implements ArticuloService{
-	
+
 	@Autowired
 	private ArticuloDao articuloDao;
-	
+
 	@Autowired
 	private ImagenesArticuloService imagenesArticuloService;
 
@@ -31,14 +33,14 @@ public class ArticuloServiceImpl implements ArticuloService{
 		List<Articulo> articulos = this.articuloDao.findAll()
 				.orElse(null);
 		List<ImagenArticulo> imagenesList = this.imagenesArticuloService.getAllImages();
-		
+
 		articulos.forEach((articulo)->{
 			ArticuloVo articuloVo = new ArticuloVo();
 			articuloVo.setId(articulo.getId());
 			articuloVo.setNombre(articulo.getNombre());
 			articuloVo.setDescripcion(articulo.getDescripcion());
 			List<ImagenArticuloVo> listImagenArticuloVo = new ArrayList<ImagenArticuloVo>();
-			
+
 			imagenesList.forEach((imagen)->{
 				ImagenArticuloVo imagenArticuloVo = new ImagenArticuloVo();
 				if( articulo.getId() == imagen.getArticulo().getId() ) {
@@ -48,9 +50,14 @@ public class ArticuloServiceImpl implements ArticuloService{
 					imagenArticuloVo.setValid(imagen.isValid());
 					listImagenArticuloVo.add(imagenArticuloVo);
 				}
-			});
 
+				
+			});
+			
+			articuloVo.setNoticia( articulo.getNoticia().getNoticia() );
 			articuloVo.setImagenes(listImagenArticuloVo);
+			
+			articuloVo.setFecha( articulo.getFecha().toString() );
 			articuloVo.setValid(articulo.isValido());
 			listArticulosVo.add(articuloVo);
 		});
@@ -63,6 +70,10 @@ public class ArticuloServiceImpl implements ArticuloService{
 		a.setId(articulo.getId());
 		a.setNombre(articulo.getNombre());
 		a.setDescripcion(articulo.getDescripcion());
+		Noticia n = new Noticia();
+		n.setId(Integer.valueOf( articulo.getIdNoticia() ));
+		a.setNoticia(n);
+		a.setFecha(new Timestamp(System.currentTimeMillis()));
 		a.setValido(articulo.isValid());
 		this.articuloDao.saveOrUpdate(a);
 	}
