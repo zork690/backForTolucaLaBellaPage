@@ -9,11 +9,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CategoriaSubCategoriaVo implements Serializable{
+public class CategoriaSubCategoriaVo extends GenericVo implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private int id;
-	private String nombre;
-
 }
