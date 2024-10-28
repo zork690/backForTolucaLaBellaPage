@@ -13,6 +13,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.ImagenArticulo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Noticia;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloReceivedVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.GenericVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenArticuloVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ArticuloService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesArticuloService;
@@ -54,7 +55,11 @@ public class ArticuloServiceImpl implements ArticuloService{
 				
 			});
 			
-			articuloVo.setNoticia( articulo.getNoticia().getNoticia() );
+			GenericVo gVo = new GenericVo();
+			gVo.setId(articulo.getNoticia().getId());
+			gVo.setNombre(articulo.getNoticia().getNoticia());
+			
+			articuloVo.setNoticia ( gVo );
 			articuloVo.setImagenes(listImagenArticuloVo);
 			
 			articuloVo.setFecha( articulo.getFecha().toString() );
