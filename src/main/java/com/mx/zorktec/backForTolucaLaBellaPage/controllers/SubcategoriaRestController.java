@@ -16,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,21 @@ public class SubcategoriaRestController {
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}catch(Exception error) {
 			LOG.error("Error al consultar las subcategorias: "+ error.getMessage());
+			response.setError(error.getMessage());
+			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/listar/{categoriaName}")
+	public ResponseEntity<SimpleResponse> listarByCategoriaName(@PathVariable String categoriaName){
+		SimpleResponse response = new SimpleResponse();
+		try {
+			response.setResult(new ArrayList<SubCategoriaVo>
+			(this.subcategoriaService.getSubCategoriasByCategoriaName(categoriaName))
+					);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}catch(Exception error) {
+			LOG.error("Error al consultar las subcategorias: {}",error.getMessage());
 			response.setError(error.getMessage());
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
