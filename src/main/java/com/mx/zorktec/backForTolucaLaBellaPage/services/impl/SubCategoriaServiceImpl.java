@@ -60,4 +60,23 @@ public class SubCategoriaServiceImpl implements SubCategoriaService {
 		this.subcategoriaDao.saveOrUpdate(subcategoria);
 	}
 
+	@Override
+	public List<SubCategoriaVo> getSubCategoriasByCategoriaName(String categoria){
+		List<SubCategoria> s = this.subcategoriaDao.getByCategoriaName(categoria);
+		List<SubCategoriaVo> sVoList = new ArrayList<SubCategoriaVo>();
+		s.forEach((subcategoria)->{
+			SubCategoriaVo sVo = new SubCategoriaVo();
+			sVo.setId(subcategoria.getId());
+			sVo.setNombre(subcategoria.getSubcategoria());
+			sVo.setValid(subcategoria.isValid());
+			CategoriaSubCategoriaVo c = new CategoriaSubCategoriaVo();
+			c.setId(subcategoria.getCategoria().getId());
+			c.setNombre(subcategoria.getCategoria().getCategoria());
+			sVo.setCategoria(c);
+			sVoList.add(sVo);
+		});
+		
+		return sVoList;
+	}
+
 }
