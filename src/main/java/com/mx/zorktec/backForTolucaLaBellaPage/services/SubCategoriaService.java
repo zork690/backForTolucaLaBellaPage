@@ -9,4 +9,5 @@ public interface SubCategoriaService {
 
 	public List<SubCategoriaVo> getSubCategorias();
 	public void insertarSubCategoria(SubCategoria_Vo subcategoriaVo);
+	public List<SubCategoriaVo> getSubCategoriasByCategoriaName(String categoria);
 }
