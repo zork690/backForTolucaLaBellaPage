@@ -57,6 +57,7 @@ extends KeycloakWebSecurityConfigurerAdapter
 			, "/v2/api-docs"
 			, "/categorias/listarCategorias"
 			, "/subcategorias/listar"
+			, "/subcategorias/listar/{categoriaName}"
 			,"/noticias/listar"
 			,"/articulos/listar"
 	};
