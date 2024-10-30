@@ -43,8 +43,9 @@ public class Negocio implements IGenericEntity, Serializable{
 	@JoinColumn(name="id_ubicacion", referencedColumnName="id")
 	private Ubicacion idUbicacion;
 	
-	@Column(name = "categoria")
-	private String categoria;
+	@ManyToOne
+	@JoinColumn(name="subcategoria", referencedColumnName="id")
+	private SubCategoria subCategoria;
 	
 	@Column(name = "descripcion")
 	private String descripcion;
