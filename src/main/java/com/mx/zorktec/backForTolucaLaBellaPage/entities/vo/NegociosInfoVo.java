@@ -24,7 +24,7 @@ public class NegociosInfoVo implements Serializable{
 	private Ubicacion ubicacion;
 	private String descripcion;
 	private String calle;
-	private String categoria;
+	private SubCategoriaVo subcategoria;
 	private String nombrEmpresa;
 	private String numeroExterior;
 	private boolean valid;
