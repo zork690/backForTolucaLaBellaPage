@@ -16,15 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.UbicacionesDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Categoria;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.SubCategoria;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Ubicacion;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CategoriaSubCategoriaVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SubCategoriaVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
@@ -84,7 +88,9 @@ public class NegocioServiceImpl implements NegocioService{
 		p.setIdNegocio(randomId);
 		p.setIdUsuario(usuario);
 		p.setCalle(negocio.getCalle());
-		p.setCategoria(negocio.getCategoria());
+		SubCategoria s = new SubCategoria();
+		s.setId( Integer.valueOf( negocio.getIdSubcategoria() ) );
+		p.setSubCategoria( s );
 		p.setDescripcion(negocio.getDescripcionComercial());
 		
 		Ubicacion u = this.ubicacionesDao
@@ -100,7 +106,7 @@ public class NegocioServiceImpl implements NegocioService{
 		//this.enviaEmailService.enviarEmail(proveedor.getCorreo());
 	}
 	
-	@Override
+	@Override //TODO REFACTORIZAR PARA VER SI PODEMOS QUITAR EL FIND BY ID DE NEGOCIODAO Y UBICACIONESDAO
 	public void actualizarNegocio(UpdateNegocioVo negocio) throws NullPointerException {
 		Optional<Negocio> p = this.negocioDao.findById(Negocio.class, negocio.getId());
 		
@@ -148,7 +154,9 @@ public class NegocioServiceImpl implements NegocioService{
 			negociosVo.setUbicacion(negocio.getIdUbicacion());
 			negociosVo.setDescripcion(negocio.getDescripcion());
 			negociosVo.setCalle(negocio.getCalle());
-			negociosVo.setCategoria(negocio.getCategoria());
+			
+			this.setSubcategoriaNegocio(negocio, negociosVo);
+			
 			negociosVo.setNombrEmpresa(negocio.getNombreEmpresa());
 			negociosVo.setNumeroExterior(negocio.getNumeroExterior());
 			negociosVo.setValid(negocio.isValido());
@@ -191,7 +199,9 @@ public class NegocioServiceImpl implements NegocioService{
 			negociosVo.setUbicacion(negocio.getIdUbicacion());
 			negociosVo.setDescripcion(negocio.getDescripcion());
 			negociosVo.setCalle(negocio.getCalle());
-			negociosVo.setCategoria(negocio.getCategoria());
+			
+			this.setSubcategoriaNegocio(negocio, negociosVo);
+			
 			negociosVo.setNombrEmpresa(negocio.getNombreEmpresa());
 			negociosVo.setNumeroExterior(negocio.getNumeroExterior());
 			negociosVo.setValid(negocio.isValido());
@@ -237,7 +247,9 @@ public class NegocioServiceImpl implements NegocioService{
 				negocioVo.setUbicacion(negocio.get().getIdUbicacion());
 				negocioVo.setDescripcion(negocio.get().getDescripcion());
 				negocioVo.setCalle(negocio.get().getCalle());
-				negocioVo.setCategoria(negocio.get().getCategoria());
+				
+				this.setSubcategoriaNegocio(negocio.get(), negocioVo);
+				
 				negocioVo.setNombrEmpresa(negocio.get().getNombreEmpresa());
 				negocioVo.setNumeroExterior(negocio.get().getNumeroExterior());
 				negocioVo.setImagenes(listImagenNegocio);
@@ -360,4 +372,18 @@ public class NegocioServiceImpl implements NegocioService{
 		return "Bearer " + token;
 		return "";
 	}*/
+	
+	private void setSubcategoriaNegocio(Negocio negocio, NegociosInfoVo negociosVo) {
+		CategoriaSubCategoriaVo cSVo = new CategoriaSubCategoriaVo();
+		cSVo.setId(negocio.getSubCategoria().getCategoria().getId());
+		cSVo.setNombre(negocio.getSubCategoria().getCategoria().getCategoria());
+		
+		SubCategoriaVo sVo = new SubCategoriaVo();
+		sVo.setId(negocio.getSubCategoria().getId());
+		sVo.setCategoria(cSVo);
+		sVo.setNombre(negocio.getSubCategoria().getSubcategoria());
+		sVo.setValid(negocio.getSubCategoria().isValid());
+		
+		negociosVo.setSubcategoria(sVo);
+	}
 }
