@@ -56,10 +56,9 @@ public class NegocioVo {
 	@Pattern(message="Descripción comercial solo letras o números", regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ,\". ]+$")
 	private String descripcionComercial;
 	
-	@NotBlank(message="Categoría es requerida")
-	@Size(max=50, message = "Categoría máximo 50 carácteres")
-	@Pattern(message="Categoría solo letras", regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")
-	private String categoria;
+	@NotBlank(message="Subcategoría es requerida")
+	@Pattern(message="Id subcategoría solo números", regexp = "^[0-9]+$")
+	private String IdSubcategoria;
 	
 	private List<ImagenesNegociosVo> imagenes;
 }
