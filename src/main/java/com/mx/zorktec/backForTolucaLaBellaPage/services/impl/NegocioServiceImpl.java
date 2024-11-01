@@ -264,6 +264,25 @@ public class NegocioServiceImpl implements NegocioService{
 		}
 		
 	}
+	
+	@Override
+	public List<NegociosInfoVo> getNegociosBySubCategoria(String subcategoria) {
+		List<Negocio> negocios = this.negocioDao.getBySubcategoria(subcategoria);
+		List<NegociosInfoVo> negociosVo = new ArrayList<NegociosInfoVo>();
+		
+		negocios.forEach((negocio)->{
+			NegociosInfoVo iNegocioVo = new NegociosInfoVo();
+			iNegocioVo.setNombrEmpresa(negocio.getNombreEmpresa());
+			iNegocioVo.setValid(negocio.isValido());
+			iNegocioVo.setIdNegocio(negocio.getIdNegocio());
+			iNegocioVo.setImagenes(new ArrayList<ImagenNegocioVo>());
+			negociosVo.add(iNegocioVo);
+			
+			
+		});
+		
+		return negociosVo;
+	}
 
 	@Override
 	public void setPassProveedor(CredencialesVo credenciales) throws ProveedorException {
@@ -386,4 +405,6 @@ public class NegocioServiceImpl implements NegocioService{
 		
 		negociosVo.setSubcategoria(sVo);
 	}
+
+
 }
