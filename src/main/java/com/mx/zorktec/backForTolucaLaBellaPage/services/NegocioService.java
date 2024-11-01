@@ -3,6 +3,7 @@ package com.mx.zorktec.backForTolucaLaBellaPage.services;
 import java.util.List;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.LoginVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
@@ -21,4 +22,5 @@ public interface NegocioService {
 	public void actualizarNegocio(UpdateNegocioVo negocio) throws NullPointerException;
 	//public LoginVo validarProveedor(CredencialesVo credenciales)throws NoSuchFieldException
 	//, IllegalAccessException;
+	public List<NegociosInfoVo> getNegociosBySubCategoria(String subcategoria);
 }
