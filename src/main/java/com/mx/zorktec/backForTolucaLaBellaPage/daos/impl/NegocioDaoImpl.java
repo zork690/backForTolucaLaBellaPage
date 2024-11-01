@@ -3,6 +3,8 @@ package com.mx.zorktec.backForTolucaLaBellaPage.daos.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.TypedQuery;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
@@ -10,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Perfil;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Proveedor;
@@ -75,6 +78,16 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		sb.append(" where valido = 1");
 		String sql = sb.toString();
 		return Optional.of((super.getSession().createQuery(sql, Negocio.class).getResultList()));
+	}
+	
+	@Override
+	public List<Negocio> getBySubcategoria(String subcategoria) {
+		String q = " FROM Negocio n WHERE n.subCategoria.subcategoria LIKE :subCatego";
+		TypedQuery<Negocio> query = super.getSession().createQuery(q, Negocio.class);
+		List<Negocio> negocios = query
+		.setParameter("subCatego", subcategoria)
+		.getResultList();
+		return negocios;
 	}
 
 	/*@Override
