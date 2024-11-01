@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.Proveedor;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 
 public interface NegocioDao extends IGenericDao<Negocio>{
 
@@ -16,4 +13,5 @@ public interface NegocioDao extends IGenericDao<Negocio>{
 	long conteoNegocios();
 	Optional<List<Negocio>> findAll();
 	Optional<List<Negocio>> findOnlyValids();
+	public List<Negocio> getBySubcategoria(String subcategoria);
 }
