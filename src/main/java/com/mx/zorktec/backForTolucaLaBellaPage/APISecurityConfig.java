@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
@@ -58,6 +59,7 @@ extends KeycloakWebSecurityConfigurerAdapter
 	@Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
+        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
 	
@@ -88,6 +90,7 @@ extends KeycloakWebSecurityConfigurerAdapter
             	requests
                         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .antMatchers(AUTH_LIST).permitAll()
+                        .antMatchers("/panel-socios/listarNegocios/**").hasRole("user")
                         .anyRequest().authenticated();
                         });
         
