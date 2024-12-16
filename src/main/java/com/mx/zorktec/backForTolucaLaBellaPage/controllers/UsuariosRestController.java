@@ -38,7 +38,7 @@ public class UsuariosRestController {
 
 	@Autowired
 	private KeycloakService keycloakService;
-	
+
 	@GetMapping("/enviarEmailConfirmacion")
 	public ResponseEntity<SimpleResponse> enviarEmail(@RequestParam String email) {
 		SimpleResponse response = new SimpleResponse();
@@ -53,7 +53,7 @@ public class UsuariosRestController {
 			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
 		}
 	}
-	
+
 	@GetMapping("/resetPassword")
 	public ResponseEntity<SimpleResponse> resetPassword(@RequestParam String email) {
 
@@ -82,7 +82,7 @@ public class UsuariosRestController {
 			response.setResult(usuarioVo);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 
-		} catch (DataAccessException | JSONException | RestClientException e) {
+		} catch (Exception e) {
 			LOG.info("Ocurrio un error al registrar al usuario: {}", e.getMessage());
 			response.setError(e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
