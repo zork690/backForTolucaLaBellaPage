@@ -26,10 +26,12 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CategoriaVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesArticuloVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ListUpdateArticuloImagesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NoticiaVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SubCategoria_Vo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ArticuloService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.CategoriaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesArticuloService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NoticiaService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.SubCategoriaService;
 
 @RestController
 @CrossOrigin(origins = {"*"})
@@ -49,6 +51,9 @@ public class PanelSociosController {
 	
 	@Autowired
 	private CategoriaService categoriaService;
+	
+	@Autowired
+	private SubCategoriaService subcategoriaService;
 
 	@PostMapping("/articulos/insertar")
 	public ResponseEntity<SimpleResponse> insertarArticulo(@Validated @RequestBody ArticuloReceivedVo articulo){
@@ -156,6 +161,28 @@ public class PanelSociosController {
 		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
 			LOG.info("Violación de reglas al insertar o actualizar categoría: {}" ,cExc.getLocalizedMessage());
 			srResult.setError("Violación de reglas al insertar o actualizar categoría.");
+			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
+		}catch (DataAccessException e) {
+			LOG.error("Ocurrio un error al guardar la categoría: {}", e.getLocalizedMessage());
+			srResult.setError("Existe un problema accesando a la base.");
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		srResult.setMessage("OK");
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
+	}
+	
+	@PostMapping("/subcategorias/crear")
+	public ResponseEntity<SimpleResponse> insertarSubCategoria(@Validated @RequestBody SubCategoria_Vo subcategoria){
+		SimpleResponse srResult = new SimpleResponse();
+
+		try {
+			LOG.info("SubCategoria enviada: {}", subcategoria);
+			this.subcategoriaService.insertarSubCategoria(subcategoria);
+			srResult.setResult("Subcategoría insertada o actualizada correctamente");
+		} 
+		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
+			LOG.info("Violación de reglas al insertar o actualizar subcategoría: {} " ,cExc.getLocalizedMessage());
+			srResult.setError("Violación de reglas al insertar o actualizar subcategoría.");
 			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
 		}catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al guardar la categoría: {}", e.getLocalizedMessage());
