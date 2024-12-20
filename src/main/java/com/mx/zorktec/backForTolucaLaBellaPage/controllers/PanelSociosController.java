@@ -3,6 +3,8 @@ package com.mx.zorktec.backForTolucaLaBellaPage.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.services.CategoriaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesArticuloService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NoticiaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.SubCategoriaService;
+import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
 
 @RestController
 @CrossOrigin(origins = {"*"})
@@ -195,9 +198,10 @@ public class PanelSociosController {
 	
 
 	@GetMapping("/listarNegocios")
-	public ResponseEntity<SimpleResponse> listarNegocios(){
+	public ResponseEntity<SimpleResponse> listarNegocios(HttpServletRequest request){
 		SimpleResponse response = new SimpleResponse();
 		try {
+			Utilities.getInfoFromToken(request.getHeader("Authorization"));
 			response.setResult("Listando negocios para el socio logueado...");
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}catch(Exception error) {
