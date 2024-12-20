@@ -91,6 +91,7 @@ extends KeycloakWebSecurityConfigurerAdapter
                         .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .antMatchers(AUTH_LIST).permitAll()
                         .antMatchers("/panel-socios/listarNegocios/**").hasRole("user")
+                        .antMatchers("/negocios/listarNegociosTodos/**").hasRole("admin")
                         .anyRequest().authenticated();
                         });
         
