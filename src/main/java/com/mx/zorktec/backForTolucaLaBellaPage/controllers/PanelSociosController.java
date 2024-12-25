@@ -1,5 +1,6 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,11 +28,14 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloReceivedVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CategoriaVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesArticuloVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ListUpdateArticuloImagesVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NoticiaVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SubCategoria_Vo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.TokenPayloadVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ArticuloService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.CategoriaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesArticuloService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NoticiaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.SubCategoriaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
@@ -57,6 +61,9 @@ public class PanelSociosController {
 	
 	@Autowired
 	private SubCategoriaService subcategoriaService;
+	
+	@Autowired
+	private NegocioService negocioService;
 
 	@PostMapping("/articulos/insertar")
 	public ResponseEntity<SimpleResponse> insertarArticulo(@Validated @RequestBody ArticuloReceivedVo articulo){
@@ -201,8 +208,8 @@ public class PanelSociosController {
 	public ResponseEntity<SimpleResponse> listarNegocios(HttpServletRequest request){
 		SimpleResponse response = new SimpleResponse();
 		try {
-			Utilities.getInfoFromToken(request.getHeader("Authorization"));
-			response.setResult("Listando negocios para el socio logueado...");
+			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
+			response.setResult(new ArrayList<NegociosInfoVo>(this.negocioService.getNegociosbyUser(tokenInfo)));
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}catch(Exception error) {
 			LOG.error("Error al consultar los negocios del socio: "+ error.getMessage());
