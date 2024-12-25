@@ -29,6 +29,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SubCategoriaVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.TokenPayloadVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
@@ -306,6 +307,25 @@ public class NegocioServiceImpl implements NegocioService{
 		
 	}
 	
+	@Override
+	public List<NegociosInfoVo> getNegociosbyUser(TokenPayloadVo tokenInfo) {
+		List<Negocio> negocios = this.negocioDao.getByUser(tokenInfo.getEmail());
+		List<NegociosInfoVo> negociosVo = new ArrayList<NegociosInfoVo>();
+		
+		negocios.forEach((negocio)->{
+			NegociosInfoVo iNegocioVo = new NegociosInfoVo();
+			iNegocioVo.setNombrEmpresa(negocio.getNombreEmpresa());
+			iNegocioVo.setValid(negocio.isValido());
+			iNegocioVo.setIdNegocio(negocio.getIdNegocio());
+			iNegocioVo.setImagenes(new ArrayList<ImagenNegocioVo>());
+			negociosVo.add(iNegocioVo);
+			
+			
+		});
+		
+		return negociosVo;
+	}
+	
 
 	@Override
 	public void setPassProveedor(SettingPassProveedorVo credenciales) throws ProveedorException {
@@ -405,6 +425,8 @@ public class NegocioServiceImpl implements NegocioService{
 		
 		negociosVo.setSubcategoria(sVo);
 	}
+
+	
 
 
 }
