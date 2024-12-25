@@ -90,6 +90,16 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		return negocios;
 	}
 
+	@Override
+	public List<Negocio> getByUser(String email) {
+		String q = " FROM Negocio n WHERE n.idUsuario.email LIKE :emailUser";
+		TypedQuery<Negocio> query = super.getSession().createQuery(q, Negocio.class);
+		List<Negocio> negocios = query
+				.setParameter("emailUser", email)
+				.getResultList();
+		return negocios;
+	}
+
 	/*@Override
 	public Usuario validarProveedor(CredencialesVo usuario) {
 		Usuario p = new Usuario();
