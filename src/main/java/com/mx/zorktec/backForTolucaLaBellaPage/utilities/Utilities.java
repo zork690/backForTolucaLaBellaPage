@@ -35,7 +35,7 @@ public class Utilities {
 		return String.valueOf(ts.getTime());
 	}
 	
-	public static final void getInfoFromToken(String token) {
+	public static final TokenPayloadVo getInfoFromToken(String token) {
 		String t = token.replace("Bearer", "");
 		LOG.info("Token: {}", t);
 		String[] chunks = t.split("\\.");
@@ -47,6 +47,7 @@ public class Utilities {
 		TokenPayloadVo tokenPayload = new TokenPayloadVo();
 		tokenPayload.setEmail(o.get("email").toString());
 		LOG.info("Email from payload: {}", tokenPayload.getEmail());
+		return tokenPayload;
 		
 	}
 
