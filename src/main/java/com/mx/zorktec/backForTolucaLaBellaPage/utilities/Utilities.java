@@ -45,7 +45,7 @@ public class Utilities {
 		LOG.info("PAYLOAD: {}", payload);
 		JsonObject o = new Gson().fromJson(payload, JsonObject.class);
 		TokenPayloadVo tokenPayload = new TokenPayloadVo();
-		tokenPayload.setEmail(o.get("email").toString());
+		tokenPayload.setEmail(o.get("email").getAsString());
 		LOG.info("Email from payload: {}", tokenPayload.getEmail());
 		return tokenPayload;
 		
