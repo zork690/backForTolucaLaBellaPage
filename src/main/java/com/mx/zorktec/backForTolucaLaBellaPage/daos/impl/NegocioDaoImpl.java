@@ -8,16 +8,10 @@ import javax.persistence.TypedQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.query.Query;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.Perfil;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.Proveedor;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 
 @Repository
 public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDao
@@ -97,7 +91,7 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		List<Negocio> negocios = query
 				.setParameter("mail", mail)
 				.getResultList();
-		LOG.info("NEGOCIOS LIST: {}", negocios);
+		LOG.info("NEGOCIOS LIST: {}", negocios.get(0).getIdNegocio());
 		return negocios;
 	}
 
