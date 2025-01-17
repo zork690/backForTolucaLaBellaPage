@@ -91,12 +91,13 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 	}
 
 	@Override
-	public List<Negocio> getByUser(String email) {
-		String q = " FROM Negocio n WHERE n.idUsuario.email LIKE :emailUser";
+	public List<Negocio> getByUser(String mail) {
+		String q = "SELECT n FROM Negocio n JOIN n.idUsuario u WHERE u.email LIKE :mail";
 		TypedQuery<Negocio> query = super.getSession().createQuery(q, Negocio.class);
 		List<Negocio> negocios = query
-				.setParameter("emailUser", email)
+				.setParameter("mail", mail)
 				.getResultList();
+		LOG.info("NEGOCIOS LIST: {}", negocios);
 		return negocios;
 	}
 
