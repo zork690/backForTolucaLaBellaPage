@@ -311,16 +311,40 @@ public class NegocioServiceImpl implements NegocioService{
 	public List<NegociosInfoVo> getNegociosbyUser(TokenPayloadVo tokenInfo) {
 		List<Negocio> negocios = this.negocioDao.getByUser(tokenInfo.getEmail());
 		List<NegociosInfoVo> negociosVo = new ArrayList<NegociosInfoVo>();
+		List<Imagen> imagenesList = this.imagenesNegocioService.getAllImages();
 		
 		negocios.forEach((negocio)->{
 			NegociosInfoVo iNegocioVo = new NegociosInfoVo();
-			iNegocioVo.setNombrEmpresa(negocio.getNombreEmpresa());
-			iNegocioVo.setValid(negocio.isValido());
+			List<ImagenNegocioVo> listImagenNegocio = new ArrayList<ImagenNegocioVo>();
+			
+			iNegocioVo.setId(negocio.getId());
 			iNegocioVo.setIdNegocio(negocio.getIdNegocio());
-			iNegocioVo.setImagenes(new ArrayList<ImagenNegocioVo>());
+			iNegocioVo.setNombre(negocio.getIdUsuario().getNombre());
+			iNegocioVo.setTelefono(negocio.getTelefono());
+			iNegocioVo.setEmail(negocio.getIdUsuario().getEmail());
+			iNegocioVo.setUbicacion(negocio.getIdUbicacion());
+			iNegocioVo.setDescripcion(negocio.getDescripcion());
+			iNegocioVo.setCalle(negocio.getCalle());
+			
+			this.setSubcategoriaNegocio(negocio, iNegocioVo);
+			iNegocioVo.setNombrEmpresa(negocio.getNombreEmpresa());
+			iNegocioVo.setNumeroExterior(negocio.getNumeroExterior());
+			
+			iNegocioVo.setValid(negocio.isValido());			
+
+			imagenesList.forEach((imagen)->{
+				ImagenNegocioVo imagenNegocioVo = new ImagenNegocioVo();
+				if(negocio.getIdNegocio().equals(imagen.getIdNegocio().getIdNegocio())) {
+					imagenNegocioVo.setId(imagen.getNumImagen());
+					imagenNegocioVo.setIdNegocio(negocio.getIdNegocio());
+					imagenNegocioVo.setNombre(imagen.getNombre());
+					imagenNegocioVo.setValid(imagen.isValid());
+					listImagenNegocio.add(imagenNegocioVo);
+				}
+			});
+			
+			iNegocioVo.setImagenes(listImagenNegocio);
 			negociosVo.add(iNegocioVo);
-			
-			
 		});
 		
 		return negociosVo;
