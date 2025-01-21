@@ -76,7 +76,7 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 	
 	@Override
 	public List<Negocio> getBySubcategoria(String subcategoria) {
-		String q = " FROM Negocio n WHERE n.subCategoria.subcategoria LIKE :subCatego";
+		String q = " FROM Negocio n WHERE n.subCategoria.subcategoria LIKE :subCatego AND n.valido = true";
 		TypedQuery<Negocio> query = super.getSession().createQuery(q, Negocio.class);
 		List<Negocio> negocios = query
 		.setParameter("subCatego", subcategoria)
