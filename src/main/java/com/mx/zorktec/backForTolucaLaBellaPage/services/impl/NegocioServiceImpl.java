@@ -270,15 +270,28 @@ public class NegocioServiceImpl implements NegocioService{
 	public List<NegociosInfoVo> getNegociosBySubCategoria(String subcategoria) {
 		List<Negocio> negocios = this.negocioDao.getBySubcategoria(subcategoria);
 		List<NegociosInfoVo> negociosVo = new ArrayList<NegociosInfoVo>();
+		List<Imagen> imagenesList = this.imagenesNegocioService.getOnlyValidImages();
 		
 		negocios.forEach((negocio)->{
 			NegociosInfoVo iNegocioVo = new NegociosInfoVo();
+			List<ImagenNegocioVo> listImagenNegocio = new ArrayList<ImagenNegocioVo>();
 			iNegocioVo.setNombrEmpresa(negocio.getNombreEmpresa());
 			iNegocioVo.setValid(negocio.isValido());
 			iNegocioVo.setIdNegocio(negocio.getIdNegocio());
-			iNegocioVo.setImagenes(new ArrayList<ImagenNegocioVo>());
-			negociosVo.add(iNegocioVo);
 			
+			imagenesList.forEach((imagen)->{
+				ImagenNegocioVo imagenNegocioVo = new ImagenNegocioVo();
+				if(negocio.getIdNegocio().equals(imagen.getIdNegocio().getIdNegocio())) {
+					imagenNegocioVo.setId(imagen.getNumImagen());
+					imagenNegocioVo.setIdNegocio(negocio.getIdNegocio());
+					imagenNegocioVo.setNombre(imagen.getNombre());
+					imagenNegocioVo.setValid(imagen.isValid());
+					listImagenNegocio.add(imagenNegocioVo);
+				}
+			});
+			
+			iNegocioVo.setImagenes(listImagenNegocio);
+			negociosVo.add(iNegocioVo);
 			
 		});
 		
