@@ -104,10 +104,8 @@ public class NegocioRestController {
 
 		try {
 			LOG.info("Negocio enviado: "+negocio);
-			//if(negocio.getCorreo()!= null) {
 			this.negocioService.actualizarNegocio(negocio);
 			srResult.setResult("Negocio actualizado correctamente");
-			//}
 		} catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al actualizar el negocio:" +e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
