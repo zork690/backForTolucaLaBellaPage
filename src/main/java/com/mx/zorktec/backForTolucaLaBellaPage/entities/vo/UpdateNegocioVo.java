@@ -21,6 +21,10 @@ public class UpdateNegocioVo {
 	@Pattern(message="Id solo números", regexp = "^[0-9]+$")
 	private String id;
 	
+	@NotBlank(message="IdNegocio es requerido")
+	@Pattern(message="IdNegocio solo números", regexp = "^[0-9]+$")
+	private String idNegocio;
+	
 	@NotBlank(message="Teléfono requerido")
 	@Size(min=10, max=10, message = "Teléfono 10 carácteres")
 	@Pattern(message="Teléfono solo números", regexp = "^\\d{10}$")
