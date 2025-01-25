@@ -8,15 +8,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.UbicacionesDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
-import com.mx.zorktec.backForTolucaLaBellaPage.entities.Categoria;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SubCategoria;
@@ -133,6 +130,29 @@ public class NegocioServiceImpl implements NegocioService{
 		this.negocioDao.saveOrUpdate(n);
 		}
 		
+	}
+	
+	@Override
+	public void insertarNegocioUserLoggued(UpdateNegocioVo negocio, TokenPayloadVo tokenInfo) {
+		Usuario usuario = this.usuarioService.getByEmail(tokenInfo.getEmail());
+		LOG.info("USUARIO ID: {}", usuario.getIdUsuario());
+		String randomId = Utilities.generateIdForClient();
+		Negocio bussiness = new Negocio();
+		SubCategoria s = new SubCategoria();
+		s.setId(Integer.valueOf(negocio.getIdSubcategoria()));
+		Ubicacion ubicacion = new Ubicacion();
+		ubicacion.setId(Integer.valueOf(negocio.getIdUbicacion()));
+		bussiness.setIdNegocio(randomId);
+		bussiness.setIdUsuario(usuario);
+		bussiness.setCalle(negocio.getCalle());
+		bussiness.setSubCategoria(s);
+		bussiness.setDescripcion(negocio.getDescripcionComercial());
+		bussiness.setIdUbicacion(ubicacion);
+		bussiness.setNombreEmpresa(negocio.getNombreEmpresa());
+		bussiness.setNumeroExterior(negocio.getNumeroExterior());
+		bussiness.setTelefono(negocio.getTelefono());
+		
+		this.negocioDao.saveOrUpdate(bussiness);
 	}
 	
 	@Override
@@ -462,8 +482,5 @@ public class NegocioServiceImpl implements NegocioService{
 		
 		negociosVo.setSubcategoria(sVo);
 	}
-
-	
-
 
 }
