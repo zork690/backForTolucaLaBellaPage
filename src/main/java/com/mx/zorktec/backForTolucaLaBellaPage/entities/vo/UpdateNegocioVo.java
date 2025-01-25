@@ -21,19 +21,10 @@ public class UpdateNegocioVo {
 	@Pattern(message="Id solo números", regexp = "^[0-9]+$")
 	private String id;
 	
-	@NotBlank(message="Nombre requerido")
-	@Size(max=50, message = "Nombre máximo 50 carácteres")
-	@Pattern(message="Nombre solo letras", regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")
-	private String nombre;
-	
 	@NotBlank(message="Teléfono requerido")
 	@Size(min=10, max=10, message = "Teléfono 10 carácteres")
 	@Pattern(message="Teléfono solo números", regexp = "^\\d{10}$")
 	private String telefono;
-	
-	@NotBlank (message="Correo requerido")
-	@Email(message = "Correo formato inválido", regexp="^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,5}")
-	private String correo;
 	
 	@NotBlank(message="Nombre de la empresa es requerido")
 	@Size(max=50, message = "Nombre de la empresa máximo 50 carácteres")
@@ -53,6 +44,10 @@ public class UpdateNegocioVo {
 	@NotBlank(message="El id de la ubicación es requerido")
 	@Pattern(message="Id ubicación solo números entre 1 a 654", regexp = "([1-9]|[1-9][0-9]|[1-5][0-9][0-9]|6[0-4][0-9]|65[0-4])")
 	private String idUbicacion;
+	
+	@NotBlank(message="El id de la subcategoria es requerido")
+	@Pattern(message="Id subcategoria solo números", regexp = "^[0-9]+$")
+	private String idSubcategoria;
 	
 	@NotBlank(message="Descripción comercial es requerida")
 	@Size(max=150, message = "Descripción comercial máximo 150 carácteres")
