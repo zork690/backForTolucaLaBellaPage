@@ -99,12 +99,13 @@ public class NegocioRestController {
 	}
 
 	@PostMapping("/negocios/actualizarNegocio")
-	public ResponseEntity<SimpleResponse> actualizarNegocio(@Validated @RequestBody UpdateNegocioVo negocio){
+	public ResponseEntity<SimpleResponse> actualizarNegocio(@Validated @RequestBody UpdateNegocioVo negocio, HttpServletRequest request){
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
+			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
 			LOG.info("Negocio enviado: "+negocio);
-			this.negocioService.actualizarNegocio(negocio);
+			this.negocioService.actualizarNegocio(negocio, tokenInfo);
 			srResult.setResult("Negocio actualizado correctamente");
 		} catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al actualizar el negocio:" +e.getLocalizedMessage());
