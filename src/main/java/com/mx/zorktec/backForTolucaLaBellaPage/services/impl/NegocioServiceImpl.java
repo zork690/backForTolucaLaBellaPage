@@ -122,6 +122,7 @@ public class NegocioServiceImpl implements NegocioService{
 		n.setNombreEmpresa(negocio.getNombreEmpresa());
 		n.setNumeroExterior(negocio.getNumeroExterior());
 		n.setTelefono(negocio.getTelefono());
+		n.setValido(negocio.isValido());
 
 		this.negocioDao.saveOrUpdate(n);	
 
@@ -146,6 +147,7 @@ public class NegocioServiceImpl implements NegocioService{
 		bussiness.setNombreEmpresa(negocio.getNombreEmpresa());
 		bussiness.setNumeroExterior(negocio.getNumeroExterior());
 		bussiness.setTelefono(negocio.getTelefono());
+		bussiness.setValido(negocio.isValido());
 
 		this.negocioDao.saveOrUpdate(bussiness);
 	}
