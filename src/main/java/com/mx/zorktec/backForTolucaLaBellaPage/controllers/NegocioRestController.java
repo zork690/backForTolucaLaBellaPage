@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,28 +30,30 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.TokenPayloadVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.exceptions.ProveedorException;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
+import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
 
 
 @RestController
 @CrossOrigin(origins = {"*"})
 public class NegocioRestController {
-	
+
 	private static final Logger LOG = LogManager.getLogger(NegocioRestController.class);
-	
+
 	@Autowired
 	private NegocioService negocioService;
-	
+
 	@Autowired
 	private ImagenesNegocioService imagenesNegocioService;
 
 	@PostMapping("/negocios/insertarNegocio")
 	public ResponseEntity<SimpleResponse> insertarNegocio(@Validated @RequestBody NegocioVo negocio){
 		SimpleResponse srResult = new SimpleResponse();
-		
+
 		try {
 			LOG.info("Negocio enviado: "+negocio);
 			if(negocio.getCorreo()!= null) {
@@ -63,7 +65,7 @@ public class NegocioRestController {
 			LOG.info("Negocio repetido: {} " ,cExc.getLocalizedMessage());
 			srResult.setError("Ya existe un negocio con el correo o con el teléfono indicado.");
 			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
-		 }catch (DataAccessException e) {
+		}catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al guardar el negocio:" +e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
 			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,17 +73,41 @@ public class NegocioRestController {
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
+
+	@PostMapping("/negocios/createNegocioUserLogged")
+	public ResponseEntity<SimpleResponse> insertarNegocioUserLogged(@Validated @RequestBody UpdateNegocioVo negocio, HttpServletRequest request){
+		SimpleResponse srResult = new SimpleResponse();
+
+		try {
+			LOG.info("Negocio enviado: "+negocio);
+			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
+
+			this.negocioService.insertarNegocioUserLoggued(negocio, tokenInfo);
+			srResult.setResult("Negocio actualizado correctamente");
+
+		} catch (DataAccessException e) {
+			LOG.error("Ocurrio un error al crear el negocio:" +e.getLocalizedMessage());
+			srResult.setError(e.getLocalizedMessage());
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (NullPointerException e) {
+			LOG.error("Ocurrio un error al crear el negocio:"+e.getLocalizedMessage());
+			srResult.setError(e.getLocalizedMessage());
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		srResult.setMessage("OK");
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
+	}
+
 	@PostMapping("/negocios/actualizarNegocio")
 	public ResponseEntity<SimpleResponse> actualizarNegocio(@Validated @RequestBody UpdateNegocioVo negocio){
 		SimpleResponse srResult = new SimpleResponse();
-		
+
 		try {
 			LOG.info("Negocio enviado: "+negocio);
-			if(negocio.getCorreo()!= null) {
-				this.negocioService.actualizarNegocio(negocio);
-				srResult.setResult("Negocio actualizado correctamente");
-			}
+			//if(negocio.getCorreo()!= null) {
+			this.negocioService.actualizarNegocio(negocio);
+			srResult.setResult("Negocio actualizado correctamente");
+			//}
 		} catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al actualizar el negocio:" +e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
@@ -94,7 +120,7 @@ public class NegocioRestController {
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/negocios/actualizarImagenes")
 	public ResponseEntity<SimpleResponse> actualizarImagenes(@RequestBody List<ImagenNegocioVo> imagenes){
 		SimpleResponse srResult = new SimpleResponse();
@@ -117,7 +143,7 @@ public class NegocioRestController {
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/negocios/listarNegocios")
 	public ResponseEntity<SimpleResponse> listarNegocios(){
 		SimpleResponse response = new SimpleResponse();
@@ -130,7 +156,7 @@ public class NegocioRestController {
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("/negocios/listarNegocios/{negocioId}")
 	public ResponseEntity<SimpleResponse> listarNegocioById(@PathVariable String negocioId){
 		SimpleResponse response = new SimpleResponse();
@@ -143,7 +169,7 @@ public class NegocioRestController {
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("/negocios/listar/{subcategoria}")
 	public ResponseEntity<SimpleResponse> listarNegociosBySubcategoria(@PathVariable String subcategoria){
 		SimpleResponse response = new SimpleResponse();
@@ -171,11 +197,11 @@ public class NegocioRestController {
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	/*@PostMapping("/proveedores/settingPassProveedor")
 	public ResponseEntity<SimpleResponse> settingPassProveedor(@Valid @RequestBody SettingPassProveedorVo credenciales){
 		SimpleResponse srResult = new SimpleResponse();
-		
+
 		try {
 			if(credenciales.getPass().equals(credenciales.getConfirm())) {
 				this.proveedorService.setPassProveedor(credenciales);
@@ -196,22 +222,22 @@ public class NegocioRestController {
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
-		
-		
+
+
 	}*/
-	
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<SimpleResponse> handleValidationExceptions(
-	  MethodArgumentNotValidException ex) {
-	    Map<String, String> errors = new HashMap<>();
-	    ex.getBindingResult().getAllErrors().forEach((error) -> {
-	        String fieldName = ((FieldError) error).getField();
-	        String errorMessage = error.getDefaultMessage();
-	        errors.put(fieldName, errorMessage);
-	    });
-	    SimpleResponse resultado = new SimpleResponse();
-	    resultado.setError(errors);
-	    resultado.setMessage("NOT OK");
-	    return new ResponseEntity<SimpleResponse>(resultado, HttpStatus.BAD_REQUEST);
+			MethodArgumentNotValidException ex) {
+		Map<String, String> errors = new HashMap<>();
+		ex.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError) error).getField();
+			String errorMessage = error.getDefaultMessage();
+			errors.put(fieldName, errorMessage);
+		});
+		SimpleResponse resultado = new SimpleResponse();
+		resultado.setError(errors);
+		resultado.setMessage("NOT OK");
+		return new ResponseEntity<SimpleResponse>(resultado, HttpStatus.BAD_REQUEST);
 	}
 }
