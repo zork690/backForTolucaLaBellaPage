@@ -113,7 +113,7 @@ public class NegocioServiceImpl implements NegocioService{
 		s.setId(Integer.valueOf(negocio.getIdSubcategoria()));
 		Ubicacion ubicacion = new Ubicacion();
 		ubicacion.setId(Integer.valueOf(negocio.getIdUbicacion()));
-		n.setIdNegocio(negocio.getId());
+		n.setIdNegocio(negocio.getIdNegocio());
 		n.setIdUsuario(usuario);
 		n.setCalle(negocio.getCalle());
 		n.setSubCategoria(s);
@@ -123,6 +123,7 @@ public class NegocioServiceImpl implements NegocioService{
 		n.setNumeroExterior(negocio.getNumeroExterior());
 		n.setTelefono(negocio.getTelefono());
 		n.setValido(negocio.isValido());
+		n.setId(Integer.valueOf(negocio.getId()));
 
 		this.negocioDao.saveOrUpdate(n);	
 
