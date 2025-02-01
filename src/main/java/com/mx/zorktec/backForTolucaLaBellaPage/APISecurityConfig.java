@@ -41,6 +41,7 @@ extends KeycloakWebSecurityConfigurerAdapter
 			, "/negocios/listarNegocios/{negocioId}"
 			, "/negocios/listar/{subcategoria}"
 			, "/negocios/insertarNegocio"
+			, "/negocios/listarNegociosFavoritos"
 			, "/usuarios/registrar"
 			, "/usuarios/login"
 			, "/usuarios/enviarEmailConfirmacion"
