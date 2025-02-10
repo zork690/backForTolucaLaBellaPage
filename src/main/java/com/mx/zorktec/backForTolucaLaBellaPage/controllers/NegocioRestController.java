@@ -196,6 +196,19 @@ public class NegocioRestController {
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/negocios/listarNegociosFavoritos")
+	public ResponseEntity<SimpleResponse> listarNegociosFavoritos(){
+		SimpleResponse response = new SimpleResponse();
+		try {
+			response.setResult(new ArrayList<NegociosInfoVo>(this.negocioService.getNegociosFavoritos()));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}catch(Exception error) {
+			LOG.error("Error al consultar los negocios favoritos:"+ error.getLocalizedMessage());
+			response.setError(error.getMessage());
+			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	/*@PostMapping("/proveedores/settingPassProveedor")
 	public ResponseEntity<SimpleResponse> settingPassProveedor(@Valid @RequestBody SettingPassProveedorVo credenciales){
