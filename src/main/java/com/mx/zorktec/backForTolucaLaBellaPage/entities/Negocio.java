@@ -61,4 +61,7 @@ public class Negocio implements IGenericEntity, Serializable{
 	
 	@Column(name = "isValid")
 	private boolean valido;
+	
+	@Column(name = "likes")
+	private int likes;
 }
