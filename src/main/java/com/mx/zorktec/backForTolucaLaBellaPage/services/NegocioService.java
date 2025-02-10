@@ -17,6 +17,7 @@ public interface NegocioService {
 	public void setPassProveedor(SettingPassProveedorVo credenciales)throws ProveedorException;
 	public List<NegociosInfoVo> getNegocios();
 	public List<NegociosInfoVo> getNegociosTodos();
+	public List<NegociosInfoVo> getNegociosFavoritos();
 	public NegociosInfoVo getNegocioById(String id) throws Exception;
 	public void actualizarNegocio(UpdateNegocioVo negocio, TokenPayloadVo tokenInfo) throws NullPointerException;
 	public void insertarNegocioUserLoggued(UpdateNegocioVo negocio, TokenPayloadVo tokenInfo);
