@@ -29,5 +29,6 @@ public class NegociosInfoVo implements Serializable{
 	private String numeroExterior;
 	private boolean valid;
 	private List<ImagenNegocioVo> imagenes;
+	private int likes;
 
 }
