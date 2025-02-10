@@ -247,8 +247,12 @@ public class NegocioServiceImpl implements NegocioService{
 	public List<NegociosInfoVo> getNegociosFavoritos() {
 		List<NegociosInfoVo> listNegociosVo = new ArrayList<NegociosInfoVo>();
 		List<Negocio> negociosFavoritos = this.negocioDao.findFavoritos();
+		
+		List<Imagen> imagenesList = this.imagenesNegocioService.getOnlyValidImages();
+		
 		negociosFavoritos.forEach((negocio)->{
 			NegociosInfoVo negociosVo = new NegociosInfoVo();
+			List<ImagenNegocioVo> listImagenNegocio = new ArrayList<ImagenNegocioVo>();
 
 			negociosVo.setId(negocio.getId());
 			negociosVo.setIdNegocio(negocio.getIdNegocio());
@@ -265,6 +269,19 @@ public class NegocioServiceImpl implements NegocioService{
 			negociosVo.setNombrEmpresa(negocio.getNombreEmpresa());
 			negociosVo.setNumeroExterior(negocio.getNumeroExterior());
 			negociosVo.setValid(negocio.isValido());
+			
+			imagenesList.forEach((imagen)->{
+				ImagenNegocioVo imagenNegocioVo = new ImagenNegocioVo();
+				if(negocio.getIdNegocio().equals(imagen.getIdNegocio().getIdNegocio())) {
+					imagenNegocioVo.setId(imagen.getNumImagen());
+					imagenNegocioVo.setIdNegocio(negocio.getIdNegocio());
+					imagenNegocioVo.setNombre(imagen.getNombre());
+					imagenNegocioVo.setValid(imagen.isValid());
+					listImagenNegocio.add(imagenNegocioVo);
+				}
+			});
+
+			negociosVo.setImagenes(listImagenNegocio);
 
 			listNegociosVo.add(negociosVo);
 		});
