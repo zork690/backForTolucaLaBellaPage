@@ -95,6 +95,16 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		return negocios;
 	}
 
+	@Override
+	public List<Negocio> findFavoritos() {
+		String q = "SELECT n FROM Negocio n WHERE n.valido = true ORDER BY likes DESC";
+		TypedQuery<Negocio> query = super.getSession().createQuery(q, Negocio.class);
+		List<Negocio> negocios = query
+				.getResultList();
+		LOG.info("NEGOCIOS FAVORITOS LIST: {}", negocios.get(0).getIdNegocio());
+		return negocios;
+	}
+
 	/*@Override
 	public Usuario validarProveedor(CredencialesVo usuario) {
 		Usuario p = new Usuario();
