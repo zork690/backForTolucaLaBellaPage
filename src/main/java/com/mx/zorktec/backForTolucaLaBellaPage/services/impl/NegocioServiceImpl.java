@@ -244,6 +244,34 @@ public class NegocioServiceImpl implements NegocioService{
 	}
 
 	@Override
+	public List<NegociosInfoVo> getNegociosFavoritos() {
+		List<NegociosInfoVo> listNegociosVo = new ArrayList<NegociosInfoVo>();
+		List<Negocio> negociosFavoritos = this.negocioDao.findFavoritos();
+		negociosFavoritos.forEach((negocio)->{
+			NegociosInfoVo negociosVo = new NegociosInfoVo();
+
+			negociosVo.setId(negocio.getId());
+			negociosVo.setIdNegocio(negocio.getIdNegocio());
+			negociosVo.setNombre(negocio.getIdUsuario().getNombre());
+			negociosVo.setTelefono(negocio.getTelefono());
+			negociosVo.setEmail(negocio.getIdUsuario().getEmail());
+			negociosVo.setUbicacion(negocio.getIdUbicacion());
+			negociosVo.setDescripcion(negocio.getDescripcion());
+			negociosVo.setCalle(negocio.getCalle());
+			negociosVo.setLikes(negocio.getLikes());
+
+			this.setSubcategoriaNegocio(negocio, negociosVo);
+
+			negociosVo.setNombrEmpresa(negocio.getNombreEmpresa());
+			negociosVo.setNumeroExterior(negocio.getNumeroExterior());
+			negociosVo.setValid(negocio.isValido());
+
+			listNegociosVo.add(negociosVo);
+		});
+		return listNegociosVo;
+	}
+
+	@Override
 	public NegociosInfoVo getNegocioById(String id) throws Exception {
 		Optional<Negocio> negocio = this.negocioDao.findById(Negocio.class, id);
 		Optional<List<Imagen>> imagenes =  this.imagenesDao.getImagesByIdOnlyValids(id);
