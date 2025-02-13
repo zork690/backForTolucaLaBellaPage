@@ -1,6 +1,7 @@
 package com.mx.zorktec.backForTolucaLaBellaPage.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,4 +65,7 @@ public class Negocio implements IGenericEntity, Serializable{
 	
 	@Column(name = "likes")
 	private int likes;
+	
+	@Column(name = "registro")
+	private Timestamp registro;
 }
