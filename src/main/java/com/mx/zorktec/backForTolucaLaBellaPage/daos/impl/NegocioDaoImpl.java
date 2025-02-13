@@ -75,6 +75,17 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 	}
 	
 	@Override
+	public List<Negocio> findNuevos(){
+		String q = "SELECT n FROM Negocio n WHERE n.valido = true ORDER BY registro DESC";
+		TypedQuery<Negocio> query = super.getSession().createQuery(q, Negocio.class);
+		List<Negocio> negocios = query
+				.setMaxResults(10)
+				.getResultList();
+		LOG.info("NEGOCIOS NUEVOS LIST: {}", negocios);
+		return negocios;
+	}
+	
+	@Override
 	public List<Negocio> getBySubcategoria(String subcategoria) {
 		String q = " FROM Negocio n WHERE n.subCategoria.subcategoria LIKE :subCatego AND n.valido = true";
 		TypedQuery<Negocio> query = super.getSession().createQuery(q, Negocio.class);
