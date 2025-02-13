@@ -18,6 +18,7 @@ public interface NegocioService {
 	public List<NegociosInfoVo> getNegocios();
 	public List<NegociosInfoVo> getNegociosTodos();
 	public List<NegociosInfoVo> getNegociosFavoritos();
+	public List<NegociosInfoVo> getNegociosNuevos();
 	public NegociosInfoVo getNegocioById(String id) throws Exception;
 	public void actualizarNegocio(UpdateNegocioVo negocio, TokenPayloadVo tokenInfo) throws NullPointerException;
 	public void insertarNegocioUserLoggued(UpdateNegocioVo negocio, TokenPayloadVo tokenInfo);
