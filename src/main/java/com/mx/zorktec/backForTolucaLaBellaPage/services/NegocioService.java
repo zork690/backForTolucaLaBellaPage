@@ -23,5 +23,6 @@ public interface NegocioService {
 	public void actualizarNegocio(UpdateNegocioVo negocio, TokenPayloadVo tokenInfo) throws NullPointerException;
 	public void insertarNegocioUserLoggued(UpdateNegocioVo negocio, TokenPayloadVo tokenInfo);
 	public List<NegociosInfoVo> getNegociosBySubCategoria(String subcategoria);
+	public List<NegociosInfoVo> getNegociosRelacionadosBySubCategoria(String subcategoria);
 	public List<NegociosInfoVo> getNegociosbyUser(TokenPayloadVo tokenInfo);
 }
