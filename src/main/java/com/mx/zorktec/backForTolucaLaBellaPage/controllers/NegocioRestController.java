@@ -183,6 +183,21 @@ public class NegocioRestController {
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/negocios/listarNegociosRelacionados/{subcategoria}")
+	public ResponseEntity<SimpleResponse> listarNegociosRelacionados(@PathVariable String subcategoria){
+		SimpleResponse response = new SimpleResponse();
+		try {
+			response.setResult(new ArrayList<NegociosInfoVo>(
+					this.negocioService.getNegociosRelacionadosBySubCategoria(subcategoria)
+					));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}catch(Exception error) {
+			LOG.error("Error al consultar los negocios relacionados: {}", error.getMessage());
+			response.setError(error.getMessage());
+			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@GetMapping("/negocios/listarNegociosTodos")
 	public ResponseEntity<SimpleResponse> listarNegociosTodos(){
