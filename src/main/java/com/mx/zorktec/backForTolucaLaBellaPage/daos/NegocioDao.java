@@ -16,5 +16,6 @@ public interface NegocioDao extends IGenericDao<Negocio>{
 	Optional<List<Negocio>> findOnlyValids();
 	List<Negocio> findNuevos();
 	List<Negocio> getBySubcategoria(String subcategoria);
+	List<Negocio> getRelacionadosBySubcategoria(String subcategoria);
 	List<Negocio> getByUser(String email);
 }
