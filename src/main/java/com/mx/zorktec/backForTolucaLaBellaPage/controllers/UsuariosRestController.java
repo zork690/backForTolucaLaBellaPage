@@ -103,6 +103,21 @@ public class UsuariosRestController {
 			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
 		}
 	}
+	
+	@PostMapping("/refresh")
+	public ResponseEntity<SimpleResponse> refreshUusario(@RequestParam String refreshToken) {
+
+		SimpleResponse response = new SimpleResponse();
+		try {
+			response.setResult(this.keycloakService.refreshUsuario(refreshToken));
+			return new ResponseEntity<>(response, HttpStatus.OK);
+
+		} catch (DataAccessException | JSONException | RestClientException e) {
+			LOG.info("Ocurrio un error al refrescar al usuario: {} " ,e.getMessage());
+			response.setError(e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+		}
+	}
 
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
