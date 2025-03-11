@@ -54,6 +54,9 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 	@Value("${zorktech.keycloak.grantType}")
 	private String grantType;
+	
+	@Value("refresh_token")
+	private String grantTypeForRefresh;
 
 	@Value("${zorktech.keycloak.url.token}")
 	private String tokenUrl;
@@ -109,6 +112,30 @@ public class KeycloakServiceImpl implements KeycloakService {
 	public ResponseAccessTokenVo loginUsuario(LoginVo usuario) throws JSONException, RestClientException {
 		LOG.info("Haciendo login ...");
 		JSONObject responseJsonObject = this.generateAccessToken(usuario);
+		ResponseAccessTokenVo responseAcessTokenVo = new ResponseAccessTokenVo();
+		responseAcessTokenVo.setAccessToken(responseJsonObject.getString("access_token"));
+		responseAcessTokenVo.setExpiresIn(
+				Integer.parseInt(responseJsonObject.getString("expires_in"))
+				);
+		responseAcessTokenVo.setRefreshExpiresIn(
+				Integer.parseInt(responseJsonObject.getString("refresh_expires_in"))
+				);
+		responseAcessTokenVo.setRefreshToken(responseJsonObject.getString("refresh_token"));
+		responseAcessTokenVo.setTokenType(responseJsonObject.getString("token_type"));
+		responseAcessTokenVo.setNotBeforePolicy(
+				Integer.parseInt(responseJsonObject.getString("not-before-policy"))
+				);
+		responseAcessTokenVo.setSessionState(responseJsonObject.getString("session_state"));
+		responseAcessTokenVo.setScope(responseJsonObject.getString("scope"));
+
+		return responseAcessTokenVo;
+
+	}
+	
+	@Override
+	public ResponseAccessTokenVo refreshUsuario(String refreshToken) throws JSONException, RestClientException {
+		LOG.info("Haciendo refresh ...");
+		JSONObject responseJsonObject = this.generateAccessTokenWithRefreshToken(refreshToken);
 		ResponseAccessTokenVo responseAcessTokenVo = new ResponseAccessTokenVo();
 		responseAcessTokenVo.setAccessToken(responseJsonObject.getString("access_token"));
 		responseAcessTokenVo.setExpiresIn(
@@ -252,6 +279,28 @@ public class KeycloakServiceImpl implements KeycloakService {
 		map.add("client_secret", this.clientSecret);
 		map.add("username", usuario.getEmail());
 		map.add("password", usuario.getPassword());
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+		LOG.info("Token solicitud: {}", entity.getBody());
+		String jsonResponse = restTemplateToken.exchange(tokenUrl
+				, HttpMethod.POST
+				, entity
+				, String.class).getBody();
+
+		JSONObject jsonObject;
+
+		jsonObject = new JSONObject(jsonResponse);
+		return jsonObject;
+	}
+	
+	private JSONObject generateAccessTokenWithRefreshToken(String refreshToken) throws JSONException, RestClientException {
+		RestTemplate restTemplateToken = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("grant_type", this.grantTypeForRefresh);
+		map.add("client_id", this.clientId);
+		map.add("client_secret", this.clientSecret);
+		map.add("refresh_token", refreshToken);
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 		LOG.info("Token solicitud: {}", entity.getBody());
 		String jsonResponse = restTemplateToken.exchange(tokenUrl
