@@ -46,6 +46,7 @@ extends KeycloakWebSecurityConfigurerAdapter
 			, "/negocios/listarNegociosNuevos"
 			, "/usuarios/registrar"
 			, "/usuarios/login"
+			, "/usuarios/refresh"
 			, "/usuarios/enviarEmailConfirmacion"
 			, "/usuarios/resetPassword"
 			, "/swagger-resources/**"
