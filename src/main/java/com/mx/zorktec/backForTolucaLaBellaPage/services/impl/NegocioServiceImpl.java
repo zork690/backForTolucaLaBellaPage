@@ -418,6 +418,8 @@ public class NegocioServiceImpl implements NegocioService{
 			iNegocioVo.setNombrEmpresa(negocio.getNombreEmpresa());
 			iNegocioVo.setValid(negocio.isValido());
 			iNegocioVo.setIdNegocio(negocio.getIdNegocio());
+			
+			this.setSubcategoriaNegocio(negocio, iNegocioVo);
 
 			imagenesList.forEach((imagen)->{
 				ImagenNegocioVo imagenNegocioVo = new ImagenNegocioVo();
