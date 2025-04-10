@@ -74,52 +74,6 @@ public class NegocioRestController {
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
 
-	@PostMapping("/negocios/createNegocioUserLogged")
-	public ResponseEntity<SimpleResponse> insertarNegocioUserLogged(@Validated @RequestBody UpdateNegocioVo negocio, HttpServletRequest request){
-		SimpleResponse srResult = new SimpleResponse();
-
-		try {
-			LOG.info("Negocio enviado: "+negocio);
-			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
-
-			this.negocioService.insertarNegocioUserLoggued(negocio, tokenInfo);
-			srResult.setResult("Negocio actualizado correctamente");
-
-		} catch (DataAccessException e) {
-			LOG.error("Ocurrio un error al crear el negocio:" +e.getLocalizedMessage());
-			srResult.setError(e.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (NullPointerException e) {
-			LOG.error("Ocurrio un error al crear el negocio:"+e.getLocalizedMessage());
-			srResult.setError(e.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		srResult.setMessage("OK");
-		return new ResponseEntity<>(srResult, HttpStatus.OK);
-	}
-
-	@PostMapping("/negocios/actualizarNegocio")
-	public ResponseEntity<SimpleResponse> actualizarNegocio(@Validated @RequestBody UpdateNegocioVo negocio, HttpServletRequest request){
-		SimpleResponse srResult = new SimpleResponse();
-
-		try {
-			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
-			LOG.info("Negocio enviado: "+negocio);
-			this.negocioService.actualizarNegocio(negocio, tokenInfo);
-			srResult.setResult("Negocio actualizado correctamente");
-		} catch (DataAccessException e) {
-			LOG.error("Ocurrio un error al actualizar el negocio:" +e.getLocalizedMessage());
-			srResult.setError("Existe un problema accesando a la base.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (NullPointerException e) {
-			LOG.error("Ocurrio un error al actualizar el negocio:"+e.getLocalizedMessage());
-			srResult.setError("Negocio no encontrado.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		srResult.setMessage("OK");
-		return new ResponseEntity<>(srResult, HttpStatus.OK);
-	}
-
 	@PostMapping("/negocios/actualizarImagenes")
 	public ResponseEntity<SimpleResponse> actualizarImagenes(@RequestBody List<ImagenNegocioVo> imagenes){
 		SimpleResponse srResult = new SimpleResponse();
