@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -66,6 +68,7 @@ public class Negocio implements IGenericEntity, Serializable{
 	@Column(name = "likes")
 	private int likes;
 	
-	@Column(name = "registro")
+	@CreationTimestamp
+	@Column(name = "registro", updatable = false)
 	private Timestamp registro;
 }
