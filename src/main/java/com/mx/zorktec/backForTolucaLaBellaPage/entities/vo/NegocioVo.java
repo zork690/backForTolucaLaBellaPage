@@ -60,5 +60,6 @@ public class NegocioVo {
 	@Pattern(message="Id subcategoría solo números", regexp = "^[0-9]+$")
 	private String IdSubcategoria;
 	
+	@Size(min=0, max=6, message = "Imágenes negocio máximo 6")
 	private List<ImagenesNegociosVo> imagenes;
 }
