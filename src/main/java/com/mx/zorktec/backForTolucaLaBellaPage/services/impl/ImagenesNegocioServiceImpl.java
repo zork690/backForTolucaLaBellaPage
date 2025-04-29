@@ -69,7 +69,9 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 	public void procesarImagenesNegocio(ImagenesNegocioVo imagenes, TokenPayloadVo tokenInfo) {
 		LOG.info("Usuario email: {}", tokenInfo.getEmail());
 		//TODO sacar el id del usuario por su email y hacer select de idNegocios que tiene el usuario y en caso que no coincida con el idNegocio enviado mandar una excepción
-		
+		Negocio n = new Negocio();
+		n.setIdNegocio(imagenes.getIdNegocio());
+		this.processingImagefromNegocio(n, imagenes.getImagenes(), imagenes.getIdNegocio());
 	}
 
 	@Override
