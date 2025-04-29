@@ -27,6 +27,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloReceivedVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CategoriaVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesArticuloVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ListUpdateArticuloImagesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NoticiaVo;
@@ -36,6 +37,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ArticuloService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.CategoriaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesArticuloService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NegocioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.NoticiaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.SubCategoriaService;
@@ -65,6 +67,9 @@ public class PanelSociosController {
 	
 	@Autowired
 	private NegocioService negocioService;
+	
+	@Autowired
+	private ImagenesNegocioService imagenesNegocioService;
 
 	@PostMapping("/articulos/insertar")
 	public ResponseEntity<SimpleResponse> insertarArticulo(@Validated @RequestBody ArticuloReceivedVo articulo){
@@ -258,6 +263,30 @@ public class PanelSociosController {
 			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (NullPointerException e) {
 			LOG.error("Ocurrio un error al crear el negocio:"+e.getLocalizedMessage());
+			srResult.setError(e.getLocalizedMessage());
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		srResult.setMessage("OK");
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
+	}
+	
+	@PostMapping("/negocios/imagenes/insertar")
+	public ResponseEntity<SimpleResponse> insertarImagenesNegocio(@Validated @RequestBody ImagenesNegocioVo imagenesNegocio, HttpServletRequest request){
+		SimpleResponse srResult = new SimpleResponse();
+
+		try {
+			LOG.info("Insertando imágen(es) de negocio: {} ", imagenesNegocio.getIdNegocio());
+			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
+
+			this.imagenesNegocioService.procesarImagenesNegocio(imagenesNegocio, tokenInfo);
+			srResult.setResult("Imágen(es) insertadas correctamente");
+
+		} catch (DataAccessException e) {
+			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
+			srResult.setError(e.getLocalizedMessage());
+			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (NullPointerException e) {
+			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
 			srResult.setError(e.getLocalizedMessage());
 			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
