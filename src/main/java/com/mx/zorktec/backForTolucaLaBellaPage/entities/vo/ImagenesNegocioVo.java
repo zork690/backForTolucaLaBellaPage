@@ -19,6 +19,6 @@ public class ImagenesNegocioVo {
 	private String idNegocio;
 	
 	@Size(min=1, max=10, message = "Imágenes negocio mínimo 1, máximo 10")
-	private List<@Valid ImagenesFromStringVo> imagenes;
+	private List<@Valid ImagenesNegociosVo> imagenes;
 
 }
