@@ -17,6 +17,6 @@ public interface ImagenesNegocioService {
 	public List<Imagen> getAllImages();
 	public List<Imagen> getOnlyValidImages();
 	public void actualizarImagenes(List<ImagenNegocioVo> imagenes) throws NullPointerException;
-	public void procesarImagenesNegocio(ImagenesNegocioVo imagenes, TokenPayloadVo tokenInfo);
+	public void procesarImagenesNegocio(ImagenesNegocioVo imagenes, TokenPayloadVo tokenInfo) throws Exception;
 
 }
