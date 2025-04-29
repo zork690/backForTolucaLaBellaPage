@@ -44,7 +44,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.services.SubCategoriaService;
 import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
 
 @RestController
-@CrossOrigin(origins = {"*"})
+@CrossOrigin(origins = { "*" })
 @RequestMapping("/panel-socios")
 public class PanelSociosController {
 
@@ -55,49 +55,48 @@ public class PanelSociosController {
 
 	@Autowired
 	private ImagenesArticuloService imagenesArticuloService;
-	
+
 	@Autowired
 	private NoticiaService noticiaService;
-	
+
 	@Autowired
 	private CategoriaService categoriaService;
-	
+
 	@Autowired
 	private SubCategoriaService subcategoriaService;
-	
+
 	@Autowired
 	private NegocioService negocioService;
-	
+
 	@Autowired
 	private ImagenesNegocioService imagenesNegocioService;
 
 	@PostMapping("/articulos/insertar")
-	public ResponseEntity<SimpleResponse> insertarArticulo(@Validated @RequestBody ArticuloReceivedVo articulo){
+	public ResponseEntity<SimpleResponse> insertarArticulo(@Validated @RequestBody ArticuloReceivedVo articulo) {
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
-			LOG.info("Articulo enviado: "+articulo);
+			LOG.info("Articulo enviado: " + articulo);
 
 			this.articuloService.insertarArticulo(articulo);
 			srResult.setResult("Articulo insertado o editado correctamente");
 
-		} 
-		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
-			LOG.info("Articulo con error de integridad en la base: {} " ,cExc.getLocalizedMessage());
-			srResult.setError("Existe un error de integridad al insertar o editar articulo: "
-					+ cExc.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
-		}catch (DataAccessException e) {
+		} catch (org.springframework.dao.DataIntegrityViolationException cExc) {
+			LOG.info("Articulo con error de integridad en la base: {} ", cExc.getLocalizedMessage());
+			srResult.setError(
+					"Existe un error de integridad al insertar o editar articulo: " + cExc.getLocalizedMessage());
+			return new ResponseEntity<>(srResult, HttpStatus.BAD_REQUEST);
+		} catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al guardar el articulo: {}", e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
 
 	@PostMapping("/articulos/imagenes/insertar")
-	public ResponseEntity<SimpleResponse> insertarImagenArticulo(@Validated @RequestBody ImagenesArticuloVo imagenes){
+	public ResponseEntity<SimpleResponse> insertarImagenArticulo(@Validated @RequestBody ImagenesArticuloVo imagenes) {
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
@@ -105,16 +104,14 @@ public class PanelSociosController {
 			this.imagenesArticuloService.processingImagefromArticulo(imagenes);
 			srResult.setResult("Imágenes insertadas correctamente");
 
-		} 
-		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
-			LOG.info("Violación de regla de integridad al insertar imágenes: {} " ,cExc.getLocalizedMessage());
-			srResult.setError("Violación de regla de integridad al insertar imágenes "
-					+ cExc.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
-		}catch (Exception e) {
+		} catch (org.springframework.dao.DataIntegrityViolationException cExc) {
+			LOG.info("Violación de regla de integridad al insertar imágenes: {} ", cExc.getLocalizedMessage());
+			srResult.setError("Violación de regla de integridad al insertar imágenes " + cExc.getLocalizedMessage());
+			return new ResponseEntity<>(srResult, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
 			LOG.error("Ocurrio un error al guardar las imágenes: {}", e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
@@ -122,156 +119,150 @@ public class PanelSociosController {
 
 	@PostMapping("/articulos/imagenes/editar")
 	public ResponseEntity<SimpleResponse> actualizarImagenes(
-			@RequestBody
-			@Validated
-			ListUpdateArticuloImagesVo imagenes
-			){
+			@RequestBody @Validated ListUpdateArticuloImagesVo imagenes) {
 		SimpleResponse srResult = new SimpleResponse();
-		Map<String, String> resultados =  this.imagenesArticuloService.updateImages(imagenes);
-		if(resultados.isEmpty()) {
+		Map<String, String> resultados = this.imagenesArticuloService.updateImages(imagenes);
+		if (resultados.isEmpty()) {
 			srResult.setResult("Imágenes actualizadas correctamente");
 			srResult.setMessage("OK");
-		}else {
+		} else {
 			srResult.setError("Errores al editar imagenes");
 			srResult.setValidations(resultados);
 		}
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
-	
+
 	@PostMapping("/noticias/crear")
-	public ResponseEntity<SimpleResponse> crearNoticia(@Validated @RequestBody NoticiaVo noticia){
+	public ResponseEntity<SimpleResponse> crearNoticia(@Validated @RequestBody NoticiaVo noticia) {
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
-			LOG.info("Noticia recibida: {}",noticia.getNoticia());
+			LOG.info("Noticia recibida: {}", noticia.getNoticia());
 
 			this.noticiaService.insertarNoticia(noticia);
 			srResult.setResult("Noticia insertada o editada correctamente");
 
-		} 
-		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
-			LOG.info("Noticia con error de integridad en la base: {} " ,cExc.getLocalizedMessage());
-			srResult.setError("Existe un error de integridad al insertar o editar noticia: "
-					+ cExc.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
-		}catch (DataAccessException e) {
+		} catch (org.springframework.dao.DataIntegrityViolationException cExc) {
+			LOG.info("Noticia con error de integridad en la base: {} ", cExc.getLocalizedMessage());
+			srResult.setError(
+					"Existe un error de integridad al insertar o editar noticia: " + cExc.getLocalizedMessage());
+			return new ResponseEntity<>(srResult, HttpStatus.BAD_REQUEST);
+		} catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al guardar la noticia: {}", e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
-	
+
 	@PostMapping("/categorias/crearCategoria")
-	public ResponseEntity<SimpleResponse> insertarCategoria(@Validated @RequestBody CategoriaVo categoria){
+	public ResponseEntity<SimpleResponse> insertarCategoria(@Validated @RequestBody CategoriaVo categoria) {
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
 			LOG.info("Categoria enviada: {}", categoria);
 			this.categoriaService.insertarCategoria(categoria);
 			srResult.setResult("Categoría insertada o actualizada correctamente");
-		} 
-		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
-			LOG.info("Violación de reglas al insertar o actualizar categoría: {}" ,cExc.getLocalizedMessage());
+		} catch (org.springframework.dao.DataIntegrityViolationException cExc) {
+			LOG.info("Violación de reglas al insertar o actualizar categoría: {}", cExc.getLocalizedMessage());
 			srResult.setError("Violación de reglas al insertar o actualizar categoría.");
-			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
-		}catch (DataAccessException e) {
+			return new ResponseEntity<>(srResult, HttpStatus.BAD_REQUEST);
+		} catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al guardar la categoría: {}", e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/subcategorias/crear")
-	public ResponseEntity<SimpleResponse> insertarSubCategoria(@Validated @RequestBody SubCategoria_Vo subcategoria){
+	public ResponseEntity<SimpleResponse> insertarSubCategoria(@Validated @RequestBody SubCategoria_Vo subcategoria) {
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
 			LOG.info("SubCategoria enviada: {}", subcategoria);
 			this.subcategoriaService.insertarSubCategoria(subcategoria);
 			srResult.setResult("Subcategoría insertada o actualizada correctamente");
-		} 
-		catch(org.springframework.dao.DataIntegrityViolationException cExc) {
-			LOG.info("Violación de reglas al insertar o actualizar subcategoría: {} " ,cExc.getLocalizedMessage());
+		} catch (org.springframework.dao.DataIntegrityViolationException cExc) {
+			LOG.info("Violación de reglas al insertar o actualizar subcategoría: {} ", cExc.getLocalizedMessage());
 			srResult.setError("Violación de reglas al insertar o actualizar subcategoría.");
-			return new ResponseEntity<>(srResult,HttpStatus.BAD_REQUEST);
-		}catch (DataAccessException e) {
+			return new ResponseEntity<>(srResult, HttpStatus.BAD_REQUEST);
+		} catch (DataAccessException e) {
 			LOG.error("Ocurrio un error al guardar la categoría: {}", e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
 
 	@GetMapping("/listarNegocios")
-	public ResponseEntity<SimpleResponse> listarNegocios(HttpServletRequest request){
+	public ResponseEntity<SimpleResponse> listarNegocios(HttpServletRequest request) {
 		SimpleResponse response = new SimpleResponse();
 		try {
 			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
 			response.setResult(new ArrayList<NegociosInfoVo>(this.negocioService.getNegociosbyUser(tokenInfo)));
 			return new ResponseEntity<>(response, HttpStatus.OK);
-		}catch(Exception error) {
-			LOG.error("Error al consultar los negocios del socio: "+ error.getMessage());
+		} catch (Exception error) {
+			LOG.error("Error al consultar los negocios del socio: " + error.getMessage());
 			response.setError(error.getMessage());
 			return new ResponseEntity<SimpleResponse>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PostMapping("/negocios/actualizarNegocio")
-	public ResponseEntity<SimpleResponse> actualizarNegocio(@Validated @RequestBody UpdateNegocioVo negocio, HttpServletRequest request){
+	public ResponseEntity<SimpleResponse> actualizarNegocio(@Validated @RequestBody UpdateNegocioVo negocio,
+			HttpServletRequest request) {
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
 			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
-			LOG.info("Negocio enviado: "+negocio);
+			LOG.info("Negocio enviado: " + negocio);
 			this.negocioService.actualizarNegocio(negocio, tokenInfo);
 			srResult.setResult("Negocio actualizado correctamente");
 		} catch (DataAccessException e) {
-			LOG.error("Ocurrio un error al actualizar el negocio:" +e.getLocalizedMessage());
+			LOG.error("Ocurrio un error al actualizar el negocio:" + e.getLocalizedMessage());
 			srResult.setError("Existe un problema accesando a la base.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (NullPointerException e) {
-			LOG.error("Ocurrio un error al actualizar el negocio:"+e.getLocalizedMessage());
+			LOG.error("Ocurrio un error al actualizar el negocio:" + e.getLocalizedMessage());
 			srResult.setError("Negocio no encontrado.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/negocios/createNegocioUserLogged")
-	public ResponseEntity<SimpleResponse> insertarNegocioUserLogged(@Validated @RequestBody UpdateNegocioVo negocio, HttpServletRequest request){
+	public ResponseEntity<SimpleResponse> insertarNegocioUserLogged(@Validated @RequestBody UpdateNegocioVo negocio,
+			HttpServletRequest request) {
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
-			LOG.info("Negocio enviado: "+negocio);
+			LOG.info("Negocio enviado: " + negocio);
 			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
 
 			this.negocioService.insertarNegocioUserLoggued(negocio, tokenInfo);
 			srResult.setResult("Negocio actualizado correctamente");
 
 		} catch (DataAccessException e) {
-			LOG.error("Ocurrio un error al crear el negocio:" +e.getLocalizedMessage());
+			LOG.error("Ocurrio un error al crear el negocio:" + e.getLocalizedMessage());
 			srResult.setError(e.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (NullPointerException e) {
-			LOG.error("Ocurrio un error al crear el negocio:"+e.getLocalizedMessage());
+			LOG.error("Ocurrio un error al crear el negocio:" + e.getLocalizedMessage());
 			srResult.setError(e.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/negocios/imagenes/insertar")
-	public ResponseEntity<SimpleResponse> insertarImagenesNegocio(@Validated @RequestBody ImagenesNegocioVo imagenesNegocio, HttpServletRequest request){
+	public ResponseEntity<SimpleResponse> insertarImagenesNegocio(
+			@Validated @RequestBody ImagenesNegocioVo imagenesNegocio, HttpServletRequest request) {
 		SimpleResponse srResult = new SimpleResponse();
 
 		try {
@@ -281,23 +272,17 @@ public class PanelSociosController {
 			this.imagenesNegocioService.procesarImagenesNegocio(imagenesNegocio, tokenInfo);
 			srResult.setResult("Imágen(es) insertadas correctamente");
 
-		} catch (DataAccessException e) {
-			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
-			srResult.setError(e.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
-			srResult.setError(e.getLocalizedMessage());
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
+			srResult.setError("Ocurrio un error al insertar la(s) imágen(es)");
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
-	
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<SimpleResponse> handleValidationExceptions(
-			MethodArgumentNotValidException ex) {
+	public ResponseEntity<SimpleResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
 		Map<String, String> errors = new HashMap<>();
 		ex.getBindingResult().getAllErrors().forEach((error) -> {
 			String fieldName = ((FieldError) error).getField();
