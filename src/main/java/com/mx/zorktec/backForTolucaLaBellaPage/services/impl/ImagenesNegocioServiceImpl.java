@@ -19,7 +19,9 @@ import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegociosVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.TokenPayloadVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.ImagenesNegocioService;
 import com.mx.zorktec.backForTolucaLaBellaPage.utilities.Utilities;
 
@@ -60,6 +62,13 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService{
 				LOG.error("A processing image error occurred {}",e.getLocalizedMessage());
 			}
 		});
+		
+	}
+	
+	@Override
+	public void procesarImagenesNegocio(ImagenesNegocioVo imagenes, TokenPayloadVo tokenInfo) {
+		LOG.info("Usuario email: {}", tokenInfo.getEmail());
+		//TODO sacar el id del usuario por su email y hacer select de idNegocios que tiene el usuario y en caso que no coincida con el idNegocio enviado mandar una excepción
 		
 	}
 
