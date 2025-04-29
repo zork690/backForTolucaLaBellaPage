@@ -285,7 +285,7 @@ public class PanelSociosController {
 			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
 			srResult.setError(e.getLocalizedMessage());
 			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (NullPointerException e) {
+		} catch (Exception e) {
 			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
 			srResult.setError(e.getLocalizedMessage());
 			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
