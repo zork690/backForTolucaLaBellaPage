@@ -26,4 +26,5 @@ public interface ImagenDao extends IGenericDao<Imagen>
 	public List<Imagen> findAll();
 	public List<Imagen> findOnlyValids();
 	public Optional<List<Imagen>> getImagesByIdOnlyValids(String id);
+	public void deleteImagen(int idImagen, String idNegocio);
 }
