@@ -74,4 +74,13 @@ public class ImagenDaoImpl extends GenericDaoImpl<Imagen> implements ImagenDao {
 		.executeUpdate();
 	}
 
+	@Override
+	public Imagen getImagenById(int idImagen, String idNegocio) {
+		String sql = " FROM Imagen WHERE id = :idImagen AND id_negocio = :idNegocio";
+		return super.getSession().createQuery(sql, Imagen.class)
+				.setParameter("idImagen", idImagen)
+				.setParameter("idNegocio", idNegocio)
+				.getSingleResult();
+	}
+
 }
