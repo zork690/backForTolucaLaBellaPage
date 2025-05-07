@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.EliminarImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegociosVo;
@@ -18,5 +19,6 @@ public interface ImagenesNegocioService {
 	public List<Imagen> getOnlyValidImages();
 	public void actualizarImagenes(List<ImagenNegocioVo> imagenes) throws NullPointerException;
 	public void procesarImagenesNegocio(ImagenesNegocioVo imagenes, TokenPayloadVo tokenInfo) throws Exception;
+	public void eliminarImagenesNegocio(EliminarImagenNegocioVo imagen, TokenPayloadVo tokenInfo) throws Exception;
 
 }
