@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloReceivedVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CategoriaVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.EliminarImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesArticuloVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ListUpdateArticuloImagesVo;
@@ -275,6 +276,27 @@ public class PanelSociosController {
 		} catch (Exception e) {
 			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
 			srResult.setError("Ocurrio un error al insertar la(s) imágen(es)");
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		srResult.setMessage("OK");
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
+	}
+	
+	@PostMapping("/negocios/imagenes/eliminar")
+	public ResponseEntity<SimpleResponse> eliminarImagenesNegocio(
+			@Validated @RequestBody EliminarImagenNegocioVo imagenNegocio, HttpServletRequest request) {
+		SimpleResponse srResult = new SimpleResponse();
+
+		try {
+			LOG.info("Eliminando imágen de negocio: {} ", imagenNegocio.getIdNegocio());
+			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
+
+			this.imagenesNegocioService.eliminarImagenesNegocio(imagenNegocio, tokenInfo);
+			srResult.setResult("Imágen eliminada correctamente");
+
+		} catch (Exception e) {
+			LOG.error("Ocurrio un error al eliminar la imagen: {}", e.getLocalizedMessage());
+			srResult.setError("Ocurrio un error al eliminar la imágen");
 			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
