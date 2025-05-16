@@ -277,7 +277,7 @@ public class PanelSociosController {
 
 		} catch (Exception e) {
 			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
-			srResult.setError("Ocurrio un error al insertar la(s) imágen(es)");
+			srResult.setError(String.format("Ocurrio un error al insertar la(s) imágen(es): %s", e.getMessage()));
 			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
