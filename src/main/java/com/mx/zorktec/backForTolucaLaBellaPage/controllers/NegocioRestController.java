@@ -74,28 +74,7 @@ public class NegocioRestController {
 		return new ResponseEntity<>(srResult, HttpStatus.OK);
 	}
 
-	@PostMapping("/negocios/actualizarImagenes")
-	public ResponseEntity<SimpleResponse> actualizarImagenes(@RequestBody List<ImagenNegocioVo> imagenes){
-		SimpleResponse srResult = new SimpleResponse();
-
-		try {
-			LOG.info("Imagenes enviadas: "+imagenes);
-
-			this.imagenesNegocioService.actualizarImagenes(imagenes);
-			srResult.setResult("Imágenes actualizadas correctamente");
-
-		} catch (DataAccessException e) {
-			LOG.error("Ocurrio un error al actualizar las imágenes:" +e.getLocalizedMessage());
-			srResult.setError("Existe un problema accesando a la base.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
-		}catch (NullPointerException e) {
-			LOG.error("Ocurrio un error al actualizar la imagen:"+e.getLocalizedMessage());
-			srResult.setError("Imagen no encontrada.");
-			return new ResponseEntity<>(srResult,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		srResult.setMessage("OK");
-		return new ResponseEntity<>(srResult, HttpStatus.OK);
-	}
+	
 
 	@GetMapping("/negocios/listarNegocios")
 	public ResponseEntity<SimpleResponse> listarNegocios(){
