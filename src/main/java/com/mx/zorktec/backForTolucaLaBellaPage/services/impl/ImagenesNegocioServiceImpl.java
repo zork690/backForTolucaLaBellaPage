@@ -78,6 +78,16 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService {
 		// una excepción
 		Negocio n = new Negocio();
 		n.setIdNegocio(imagenes.getIdNegocio());
+		
+		Optional<List<Imagen>> listaImagenesOpt = this.imagenDao.getImagesById(imagenes.getIdNegocio());
+		
+		if(listaImagenesOpt.isPresent()) {
+			List<Imagen> listaImagenes = listaImagenesOpt.get();
+			if(listaImagenes.size() >= 10) {
+				throw new Exception("No se pueden tener más de 10 imágenes por negocio");
+			}
+		}
+		
 		imagenes.getImagenes().forEach(imagen->{
 			try {
 				this.processingImagefromNegocio(n, imagen);
