@@ -10,4 +10,5 @@ public interface UsuarioService {
 	public UsuarioVo generateUsuarioVo(NegocioVo negocioVo);
 	public Usuario getById(String id);
 	public Usuario getByEmail(String email);
+	public void updateUserValidation(String email);
 }
