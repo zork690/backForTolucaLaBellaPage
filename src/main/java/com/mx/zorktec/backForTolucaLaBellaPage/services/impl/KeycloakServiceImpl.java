@@ -176,6 +176,9 @@ public class KeycloakServiceImpl implements KeycloakService {
 		UserRepresentation userRepresentation = userList.stream().findFirst().orElse(null);
 		this.sendConfirmationEmailRequest(this.generateAccessToken(), userRepresentation.getId()
 				, new String[] {"VERIFY_EMAIL"});
+		
+		
+		this.usuarioService.updateUserValidation(email);
 	}
 
 	@Override
