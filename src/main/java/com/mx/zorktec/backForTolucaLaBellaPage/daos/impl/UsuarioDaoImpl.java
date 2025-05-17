@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,6 +52,16 @@ public class UsuarioDaoImpl extends GenericDaoImpl<Usuario> implements UsuarioDa
 	protected Class<Usuario> getType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public void updateValidUser(String email) {
+		String sql = "UPDATE FROM Usuario SET valido = :valid WHERE email = :mail";
+		super.getSession().createQuery(sql).setParameter("mail", email)
+		.setParameter("valid", true)
+		.executeUpdate();
+		
 	}
 
 }
