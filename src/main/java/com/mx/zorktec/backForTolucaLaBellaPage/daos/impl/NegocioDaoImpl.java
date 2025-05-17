@@ -113,7 +113,6 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		List<Negocio> negocios = query
 				.setParameter("mail", mail)
 				.getResultList();
-		LOG.info("NEGOCIOS LIST: {}", negocios.get(0).getIdNegocio());
 		return negocios;
 	}
 
