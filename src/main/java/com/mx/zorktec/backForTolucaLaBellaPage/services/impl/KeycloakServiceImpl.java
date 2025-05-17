@@ -33,12 +33,17 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.LoginVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.RegistroVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ResponseAccessTokenVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioKeycloakVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UsuarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.services.KeycloakService;
+import com.mx.zorktec.backForTolucaLaBellaPage.services.UsuarioService;
 
 @Service
 public class KeycloakServiceImpl implements KeycloakService {
 
 	private static final Logger LOG = LogManager.getLogger(KeycloakServiceImpl.class);
+	
+	@Autowired
+	private UsuarioService usuarioService;
 
 	@Value("${keycloak.resource}")
 	private String clientId;
@@ -106,6 +111,12 @@ public class KeycloakServiceImpl implements KeycloakService {
 		String id = this.getClientIdRequest();
 		JSONObject roleInfo = this.gettingRolesInfo(id);
 		this.sendSettingRoleRequest(usuarioKeycloak, roleInfo);
+		
+		UsuarioVo u = new UsuarioVo();
+		u.setNombre(usuario.getNombre());
+		u.setEmail(usuario.getCorreo());
+		u.setTelefono(usuario.getTelefono());
+		this.usuarioService.insertarUsuario(u);
 	}
 
 	@Override
