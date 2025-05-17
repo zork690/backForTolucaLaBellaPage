@@ -122,7 +122,6 @@ public class NegocioDaoImpl extends GenericDaoImpl<Negocio> implements NegocioDa
 		TypedQuery<Negocio> query = super.getSession().createQuery(q, Negocio.class);
 		List<Negocio> negocios = query
 				.getResultList();
-		LOG.info("NEGOCIOS FAVORITOS LIST: {}", negocios.get(0).getIdNegocio());
 		return negocios;
 	}
 
