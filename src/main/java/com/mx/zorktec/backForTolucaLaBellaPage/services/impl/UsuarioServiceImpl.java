@@ -51,6 +51,11 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public Usuario getByEmail(String email) {
 		return this.usuarioDao.findByEmail(email).orElse(null);
 	}
+
+	@Override
+	public void updateUserValidation(String email) {
+		this.usuarioDao.updateValidUser(email);	
+	}
 	
 	
 }
