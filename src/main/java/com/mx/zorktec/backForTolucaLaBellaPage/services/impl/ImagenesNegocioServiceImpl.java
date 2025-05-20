@@ -38,8 +38,10 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService {
 
 	@Autowired
 	private ImagenDao imagenDao;
-	
+
 	private static final String NOMBRE_ARCHIVO_ELIMINAR = "imagenAEliminar.txt";
+
+	private static final long MAX_SIZE_ALLOWED_IN_BYTES = 5000000; // 5 MB
 
 	@Override
 	public void processingImagefromNegocio(Negocio negocio, List<ImagenesNegociosVo> imagenes, String randomId) {
@@ -78,16 +80,16 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService {
 		// una excepción
 		Negocio n = new Negocio();
 		n.setIdNegocio(imagenes.getIdNegocio());
-		
+
 		Optional<List<Imagen>> listaImagenesOpt = this.imagenDao.getImagesById(imagenes.getIdNegocio());
-		
+
 		if(listaImagenesOpt.isPresent()) {
 			List<Imagen> listaImagenes = listaImagenesOpt.get();
 			if(listaImagenes.size() >= 10) {
 				throw new Exception("No se pueden tener más de 10 imágenes por negocio");
 			}
 		}
-		
+
 		imagenes.getImagenes().forEach(imagen->{
 			try {
 				this.processingImagefromNegocio(n, imagen);
@@ -124,7 +126,7 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService {
 		});
 
 	}
-	
+
 	@Override
 	public void eliminarImagenesNegocio(EliminarImagenNegocioVo imagen, TokenPayloadVo tokenInfo) throws Exception {
 		LOG.info("Usuario email: {}", tokenInfo.getEmail());
@@ -136,9 +138,9 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService {
 		this.eliminarImagenFromDirectory(i);
 		LOG.info("Eliminando imagen: {}", imagen.getIdImagen());
 		this.imagenDao.deleteImagen(Integer.valueOf(imagen.getIdImagen()), imagen.getIdNegocio());
-		
+
 	}
-	
+
 	private void eliminarImagenFromDirectory(Imagen imagen) throws Exception {
 		String filePath = this.basePath + "/" + NOMBRE_ARCHIVO_ELIMINAR;
 		PrintWriter writer = new PrintWriter(
@@ -156,6 +158,13 @@ public class ImagenesNegocioServiceImpl implements ImagenesNegocioService {
 		String timeStamp = Utilities.generateTimeStampString();
 		String nombreImagen = timeStamp + "_" + imagen.getNombre();
 		String base64 = imagen.getBaseContent();
+
+		boolean isValidSize = Utilities.imageIsSmallThanAllowedSize(base64, MAX_SIZE_ALLOWED_IN_BYTES);
+		if(!isValidSize) {
+			throw new Exception(String.format("La imágen supera el tamaño máximo permitido %f KiloBytes"
+					, (double)(MAX_SIZE_ALLOWED_IN_BYTES/1000) ));
+		}
+
 		byte[] data = DatatypeConverter.parseBase64Binary(base64);
 		String path = this.basePath + "/" + nombreImagen;
 		File file = new File(path);
