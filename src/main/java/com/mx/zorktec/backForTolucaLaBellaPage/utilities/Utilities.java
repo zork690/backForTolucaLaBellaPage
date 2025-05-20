@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.TokenPayloadVo;
 
 public class Utilities {
-	
+
 	private static final Logger LOG = LogManager.getLogger(Utilities.class);
 
 	public static final String limpiaCadena(String texto) {
@@ -23,18 +23,18 @@ public class Utilities {
 		return texto.replaceAll("\\s+", " ").trim().toUpperCase();
 
 	}
-	
+
 	public static final String generateIdForClient() {
 		Long ms = System.currentTimeMillis();
 		return String.valueOf(ms);
 	}
-	
-	
+
+
 	public static final String generateTimeStampString() {
 		Timestamp ts = Timestamp.from(Instant.now());
 		return String.valueOf(ts.getTime());
 	}
-	
+
 	public static final TokenPayloadVo getInfoFromToken(String token) {
 		String t = token.replace("Bearer", "");
 		LOG.info("Token: {}", t);
@@ -48,7 +48,21 @@ public class Utilities {
 		tokenPayload.setEmail(o.get("email").getAsString());
 		LOG.info("Email from payload: {}", tokenPayload.getEmail());
 		return tokenPayload;
-		
+
+	}
+
+	public static boolean imageIsSmallThanAllowedSize(String imagenBase64, long sizeInBytesAllowed) {
+		String lastTwoChars = imagenBase64.substring(imagenBase64.length() - 2);
+		LOG.info("Last two characters of image: {}", lastTwoChars);
+		int y = 0;
+		if (lastTwoChars.equals("==")) {
+			y = 2;
+		} else if (lastTwoChars.equals("=")) {
+			y = 1;
+		}
+		long sizeImageInBytes = (long)Math.ceil((imagenBase64.length() * 3) / 4.0) - y;
+		LOG.info("SIZE IMAGE BYTES: {}", sizeImageInBytes);
+		return sizeImageInBytes <= sizeInBytesAllowed;
 	}
 
 }
