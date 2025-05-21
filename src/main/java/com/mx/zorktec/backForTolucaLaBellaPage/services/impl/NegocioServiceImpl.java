@@ -13,15 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.UbicacionesDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.ImagenDao;
+import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioComentarioDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.daos.NegocioDao;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Imagen;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Negocio;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.NegocioComentario;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SubCategoria;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Ubicacion;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CategoriaSubCategoriaVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioComentarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
@@ -53,6 +56,9 @@ public class NegocioServiceImpl implements NegocioService{
 
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private NegocioComentarioDao negocioComentarioDao;
 
 	//@Autowired
 	//private PermisosPerfilesDAO permisosDao;
@@ -603,6 +609,25 @@ public class NegocioServiceImpl implements NegocioService{
 		sVo.setValid(negocio.getSubCategoria().isValid());
 
 		negociosVo.setSubcategoria(sVo);
+	}
+
+	@Override
+	public List<NegocioComentarioVo> getNegocioComentarios(String negocioId) {
+		List<NegocioComentario> negocioComentariosList = this.negocioComentarioDao
+				.findComentariosByIdNegocio(negocioId);
+		List<NegocioComentarioVo> negocioComentarioVoList = new ArrayList<>();
+		
+		negocioComentariosList.forEach(negocioComentario->{
+			NegocioComentarioVo nVo = new NegocioComentarioVo();
+			nVo.setComentario(negocioComentario.getComentario());
+			String email = negocioComentario.getIdUsuario().getEmail();
+			int index = email.indexOf('@');
+			nVo.setNickName(email.substring(0, index));
+			
+			negocioComentarioVoList.add(nVo);
+		});
+		
+		return negocioComentarioVoList;
 	}
 
 }
