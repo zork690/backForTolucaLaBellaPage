@@ -3,6 +3,7 @@ package com.mx.zorktec.backForTolucaLaBellaPage.services;
 import java.util.List;
 
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioComentarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
@@ -25,4 +26,5 @@ public interface NegocioService {
 	public List<NegociosInfoVo> getNegociosBySubCategoria(String subcategoria);
 	public List<NegociosInfoVo> getNegociosRelacionadosBySubCategoria(String subcategoria);
 	public List<NegociosInfoVo> getNegociosbyUser(TokenPayloadVo tokenInfo);
+	public List<NegocioComentarioVo> getNegocioComentarios(String negocioId);
 }
