@@ -21,9 +21,5 @@ public class ComentarioNegocioVo {
 	@NotBlank(message="idNegocio requerido")
 	@Pattern(message="idNegocio solo números", regexp = "^[0-9]+$")
 	private String idNegocio;
-	
-	@NotBlank(message="idUsuario requerido")
-	@Pattern(message="idUsuario solo números", regexp = "^[0-9]+$")
-	private String idUsuario;
 
 }
