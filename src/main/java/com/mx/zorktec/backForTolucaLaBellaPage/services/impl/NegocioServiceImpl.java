@@ -22,6 +22,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.SubCategoria;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Ubicacion;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.Usuario;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CategoriaSubCategoriaVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ComentarioNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CredencialesVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioComentarioVo;
@@ -510,107 +511,7 @@ public class NegocioServiceImpl implements NegocioService{
 
 		return negociosVo;
 	}
-
-
-	@Override
-	public void setPassProveedor(SettingPassProveedorVo credenciales) throws ProveedorException {
-		LOG.info("Setting Pass a Proveedor: ");
-
-		//crear el método en los daos que busca al usuario por codigo
-	}
-
-	/*@Override
-	public LoginVo validarProveedor(CredencialesVo credenciales) throws NoSuchFieldException
-	, IllegalAccessException {
-		Usuario usuarioValidar = proveedorDao.validarProveedor(credenciales);
-		UsuarioVo usuarioVo = new UsuarioVo();
-		LoginVo loginVo = new LoginVo();
-
-		if (usuarioValidar != null) {
-			String s = new String(usuarioValidar.getPass());
-			byte[] decoded = Base64.getDecoder().decode(s.trim());
-			String contrasenaBD = new String(decoded);
-			String contraEnviada = credenciales.getPass().trim();
-
-			LOG.info(contraEnviada);
-
-			if (!contrasenaBD.equals(contraEnviada)) {
-				usuarioVo.setIdUsuario(usuarioValidar.getId());
-				usuarioVo.setIdPerfil(usuarioValidar.getIdPerfil().getId());
-				usuarioVo.setNombreUsuario(usuarioValidar.getNombre());
-				usuarioVo.setContrasena(s.trim());
-
-				PermisosVo permisosVo = new PermisosVo();
-				List<PermisosPerfil> permisos = permisosDao
-						.obtienePermisosByPerfil(usuarioValidar.getIdPerfil().getId());
-				if(!permisos.isEmpty()) {
-					for (PermisosPerfil permisosPerfiles : permisos) {
-						permisosVo.setPermisoValue(permisosPerfiles.getIdPermiso().getNombre()
-								, permisosPerfiles.getBandera());
-					}
-				}
-
-				loginVo.setEstatus(true);
-				loginVo.setUsuario(usuarioVo);
-				loginVo.setPermisos(permisosVo);
-				loginVo.setMsgDesripcion("Inicio de sesión correcto");
-				loginVo.setToken(this.setJWTToken(usuarioVo.getNombreUsuario()));
-
-			}else {
-				loginVo.setEstatus(false);
-				loginVo.setUsuario(null);
-				loginVo.setPermisos(null);
-				loginVo.setMsgDesripcion("La contraseña es incorrecta");
-			}
-		} else {
-			loginVo.setEstatus(false);
-			loginVo.setUsuario(null);
-			loginVo.setPermisos(null);
-			loginVo.setMsgDesripcion("El usuario no existe");
-		}
-
-		return loginVo;
-	}*/
-
-	/*private String setJWTToken(String username) {
-
-		LOG.info("GENERATING JWT TOKEN...");
-
-		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-				.commaSeparatedStringToAuthorityList("ROLE_USER");
-
-		@SuppressWarnings("deprecation")
-		String token = Jwts
-				.builder()
-				.setId(this.setJTI)
-				.setSubject(username)
-				.claim("authorities",
-						grantedAuthorities.stream()
-								.map(GrantedAuthority::getAuthority)
-								.collect(Collectors.toList()))
-				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + this.timeTokenMs))
-				.signWith(SignatureAlgorithm.HS512,
-						this.secretKey.getBytes()).compact();
-
-		return "Bearer " + token;
-		return "";
-	}*/
-
-	private void setSubcategoriaNegocio(Negocio negocio, NegociosInfoVo negociosVo) {
-		CategoriaSubCategoriaVo cSVo = new CategoriaSubCategoriaVo();
-		cSVo.setId(negocio.getSubCategoria().getCategoria().getId());
-		cSVo.setNombre(negocio.getSubCategoria().getCategoria().getCategoria());
-
-		SubCategoriaVo sVo = new SubCategoriaVo();
-		sVo.setId(negocio.getSubCategoria().getId());
-		sVo.setCategoria(cSVo);
-		sVo.setNombre(negocio.getSubCategoria().getSubcategoria());
-		sVo.setValid(negocio.getSubCategoria().isValid());
-
-		negociosVo.setSubcategoria(sVo);
-	}
-
+	
 	@Override
 	public List<NegocioComentarioVo> getNegocioComentarios(String negocioId) {
 		List<NegocioComentario> negocioComentariosList = this.negocioComentarioDao
@@ -628,6 +529,44 @@ public class NegocioServiceImpl implements NegocioService{
 		});
 		
 		return negocioComentarioVoList;
+	}
+
+	@Override
+	public void insertarNegocioComentario(ComentarioNegocioVo comentarioNegocio, TokenPayloadVo tokenInfo)
+			throws Exception {
+		NegocioComentario negocioCom = new NegocioComentario();
+		negocioCom.setComentario(comentarioNegocio.getComentario());
+		Negocio negocio = new Negocio();
+		negocio.setIdNegocio(comentarioNegocio.getIdNegocio());
+		negocioCom.setIdNegocio(negocio);
+		
+		Usuario usuario = this.usuarioService.getByEmail(tokenInfo.getEmail());
+		negocioCom.setIdUsuario(usuario);
+		
+		this.negocioComentarioDao.saveOrUpdate(negocioCom);
+		
+	}
+
+
+	@Override
+	public void setPassProveedor(SettingPassProveedorVo credenciales) throws ProveedorException {
+		LOG.info("Setting Pass a Proveedor: ");
+
+		//crear el método en los daos que busca al usuario por codigo
+	}
+
+	private void setSubcategoriaNegocio(Negocio negocio, NegociosInfoVo negociosVo) {
+		CategoriaSubCategoriaVo cSVo = new CategoriaSubCategoriaVo();
+		cSVo.setId(negocio.getSubCategoria().getCategoria().getId());
+		cSVo.setNombre(negocio.getSubCategoria().getCategoria().getCategoria());
+
+		SubCategoriaVo sVo = new SubCategoriaVo();
+		sVo.setId(negocio.getSubCategoria().getId());
+		sVo.setCategoria(cSVo);
+		sVo.setNombre(negocio.getSubCategoria().getSubcategoria());
+		sVo.setValid(negocio.getSubCategoria().isValid());
+
+		negociosVo.setSubcategoria(sVo);
 	}
 
 }
