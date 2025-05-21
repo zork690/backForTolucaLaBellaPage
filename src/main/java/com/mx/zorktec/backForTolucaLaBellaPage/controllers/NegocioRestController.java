@@ -29,6 +29,7 @@ import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegociosInfoVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.NegocioComentarioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.SettingPassProveedorVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.TokenPayloadVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.UpdateNegocioVo;
@@ -93,7 +94,7 @@ public class NegocioRestController {
 	public ResponseEntity<SimpleResponse> listarNegocioComentarios(@PathVariable String negocioId){
 		SimpleResponse response = new SimpleResponse();
 		try {
-			response.setResult(new ArrayList<NegociosInfoVo>(this.negocioService.getNegocioComentarios()));
+			response.setResult(new ArrayList<NegocioComentarioVo>(this.negocioService.getNegocioComentarios(negocioId)));
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		}catch(Exception error) {
 			LOG.error("Error al consultar los comentarios del negocio: {}", error.getMessage());
