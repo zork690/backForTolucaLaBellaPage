@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.SimpleResponse;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ArticuloReceivedVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.CategoriaVo;
+import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ComentarioNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.EliminarImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenNegocioVo;
 import com.mx.zorktec.backForTolucaLaBellaPage.entities.vo.ImagenesArticuloVo;
@@ -278,6 +279,27 @@ public class PanelSociosController {
 		} catch (Exception e) {
 			LOG.error("Ocurrio un error al insertar la(s) imágen(es): {}", e.getLocalizedMessage());
 			srResult.setError(String.format("Ocurrio un error al insertar la(s) imágen(es): %s", e.getMessage()));
+			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		srResult.setMessage("OK");
+		return new ResponseEntity<>(srResult, HttpStatus.OK);
+	}
+	
+	@PostMapping("/negocios/comentario/insertar")
+	public ResponseEntity<SimpleResponse> insertarNegocioComentario(
+			@Validated @RequestBody ComentarioNegocioVo comentarioNegocio, HttpServletRequest request) {
+		SimpleResponse srResult = new SimpleResponse();
+
+		try {
+			LOG.info("Insertando comentario de negocio: {} ", comentarioNegocio.getIdNegocio());
+			TokenPayloadVo tokenInfo = Utilities.getInfoFromToken(request.getHeader("Authorization"));
+
+			this.negocioService.insertarNegocioComentario(comentarioNegocio, tokenInfo);
+			srResult.setResult("Comentario insertado correctamente");
+
+		} catch (Exception e) {
+			LOG.error("Ocurrio un error al insertar el comentario: {}", e.getLocalizedMessage());
+			srResult.setError(String.format("Ocurrio un error al insertar el comentario: %s", e.getLocalizedMessage()));
 			return new ResponseEntity<>(srResult, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		srResult.setMessage("OK");
